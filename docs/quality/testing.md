@@ -9,8 +9,8 @@
 
 ## What Must Be Tested
 
-- Validation boundaries.
-- Auth and permissions.
+- Validation boundaries, including the rejection paths and not only the accepted input.
+- Auth and permissions, including access to a record the caller does not own.
 - Error responses.
 - Data persistence.
 - Background jobs and cancellation.

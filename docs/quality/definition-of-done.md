@@ -7,6 +7,7 @@ A change is done only when:
 - Verification commands pass.
 - API, database, architecture, security, or user workflow docs are updated when behavior changes.
 - New dependencies are justified.
+- New boundaries validate untrusted input, and authorization is enforced server-side per record.
 - Performance-sensitive changes carry before and after numbers; neutral results were reverted.
 - Generated files are produced by scripts or documented sources, not manually edited.
 - No secrets are committed.

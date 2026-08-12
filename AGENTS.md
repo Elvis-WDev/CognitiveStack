@@ -29,6 +29,7 @@
 - Version control: `docs/quality/version-control.md`
 - Frontend review checklist: `docs/quality/frontend-checklist.md`
 - Security principles: `docs/security/principles.md`
+- Security hardening: `docs/security/hardening.md`
 - Performance: `docs/quality/performance.md`
 
 ## Workflow
@@ -65,6 +66,7 @@ Use pnpm through Corepack. Replace placeholders only when the project exposes di
 - Do not introduce production dependencies without documenting why.
 - Do not modify generated files manually.
 - Do not bypass validation at HTTP, environment, auth, database, or external-service boundaries.
+- Enforce authorization server-side for each record; a frontend permission gate is presentation only.
 - Measure before optimizing, and revert any optimization that does not beat its baseline.
 - Do not mark work complete while verification is failing.
 - Keep secrets out of committed files.
