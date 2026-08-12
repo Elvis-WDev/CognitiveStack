@@ -68,7 +68,7 @@ Use this checklist before completing any user-visible screen.
 - [ ] Chevrons appear only on expandable parents.
 - [ ] Desktop sidebar and mobile drawer expose the same authorized destinations.
 - [ ] Header controls are stable, borderless where appropriate, and at least 44px targets.
-- [ ] No overlap occurs at mobile, tablet, desktop, wide desktop, or 200% zoom.
+- [ ] No overlap occurs at 320px, 768px, 1024px, 1440px, or 200% zoom.
 - [ ] Long text wraps or truncates predictably.
 
 ## Performance
@@ -84,7 +84,8 @@ Use this checklist before completing any user-visible screen.
 - [ ] Keyboard-only navigation and visible focus work.
 - [ ] Heading order and landmarks are logical.
 - [ ] Status is not communicated only through color.
-- [ ] Contrast and touch targets are sufficient.
+- [ ] Contrast meets 4.5:1 for body text and 3:1 for large text and meaningful icons.
+- [ ] Touch targets are at least 44px.
 - [ ] Reduced motion is respected for nonessential animation.
 
 ## Verification Evidence

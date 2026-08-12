@@ -93,7 +93,7 @@ Do not duplicate the same module title immediately below the header.
 - Ensure long words, emails, references, and translated labels wrap or truncate with a discoverable full value.
 - Do not scale type continuously with viewport width.
 - Do not allow controls, text, or overlays to cover adjacent content.
-- Test at mobile, tablet, desktop, wide desktop, 200% zoom, and with browser text enlargement.
+- Test at 320px, 768px, 1024px, and 1440px, plus 200% zoom and browser text enlargement.
 
 ## Dark And Light Themes
 
@@ -113,10 +113,12 @@ Do not duplicate the same module title immediately below the header.
 
 ## Accessibility
 
-- Use landmarks and one logical heading hierarchy.
+The baseline is WCAG 2.1 level AA.
+
+- Use landmarks and one logical heading hierarchy, without skipping levels.
 - Preserve visible focus and keyboard order.
 - Give icon-only buttons accessible names.
 - Associate labels, descriptions, and errors with form controls.
 - Ensure dialogs manage focus and announce their title.
 - Do not communicate status only through color.
-- Meet contrast requirements in every theme and interaction state.
+- Meet contrast in every theme and interaction state: 4.5:1 for body text, 3:1 for large text and meaningful non-text elements.
