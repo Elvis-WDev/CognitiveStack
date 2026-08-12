@@ -26,6 +26,7 @@
 - Interface design: `docs/architecture/interface-design.md`
 - Active plans: `docs/plans/active/`
 - Definition of done: `docs/quality/definition-of-done.md`
+- Version control: `docs/quality/version-control.md`
 - Frontend review checklist: `docs/quality/frontend-checklist.md`
 - Security principles: `docs/security/principles.md`
 
@@ -37,6 +38,7 @@
 4. Implement the smallest coherent change.
 5. Update documentation when behavior, architecture, API, data, or decisions change.
 6. Run the project's verification commands before calling work complete.
+7. Commit each coherent unit separately, with a short descriptive message.
 
 ## Required Verification
 
@@ -64,6 +66,9 @@ Use pnpm through Corepack. Replace placeholders only when the project exposes di
 - Do not bypass validation at HTTP, environment, auth, database, or external-service boundaries.
 - Do not mark work complete while verification is failing.
 - Keep secrets out of committed files.
+- Commit one coherent unit at a time; never batch a whole working session into one commit.
+- Write commit subjects as `type(scope): imperative subject` under 72 characters, and keep bodies to three short lines at most.
+- Commit and push only when asked, and never rewrite published history without an explicit request.
 - Do not expose internal IDs, provider names, storage paths, auth implementation details, or other technical references in product UI when a business-facing label or automatic backend value is possible.
 - Reuse the documented table, form, dialog, feedback, navigation, and responsive patterns instead of inventing a different interaction model per module.
 - Optimize operational screens for scanning and repeated work. Remove redundant summaries, duplicated headings, explanatory boxes, and nested cards that do not help the user decide or act.

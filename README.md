@@ -35,6 +35,7 @@ verificables dentro del propio proyecto.
 | Calidad       | Definition of Done, testing, code review y observabilidad      |
 | Seguridad     | Principios, boundaries y threat model                          |
 | Ejecucion     | Planes activos, decisiones y skills reutilizables              |
+| Entrega       | Commits pequenos, mensajes descriptivos y pull requests        |
 
 ## Stack de referencia
 
@@ -106,8 +107,9 @@ pequeno y abre solamente la fuente de verdad relevante para la tarea.
 4. Implementar el cambio coherente mas pequeno.
 5. Ejecutar formato, lint, tipos, pruebas y build.
 6. Actualizar documentacion y referencias derivadas.
-7. Registrar decisiones costosas o duraderas mediante ADR.
-8. No declarar terminado mientras implementacion, pruebas y documentacion difieran.
+7. Confirmar cada unidad coherente en su propio commit con un mensaje corto y descriptivo.
+8. Registrar decisiones costosas o duraderas mediante ADR.
+9. No declarar terminado mientras implementacion, pruebas y documentacion difieran.
 
 Ejemplo de solicitud inicial:
 
@@ -124,6 +126,7 @@ Definition of Done. Implementa, verifica y actualiza la documentacion afectada.
 - `review-code`: revisar bugs, seguridad, regresiones, arquitectura y pruebas.
 - `update-documentation`: mantener fuentes de verdad y referencias sincronizadas.
 - `implement-operational-frontend`: construir interfaces operativas consistentes y sin sobrecarga visual.
+- `commit-changes`: dividir el trabajo en commits pequenos con mensajes descriptivos.
 
 Los skills viven en `.agents/skills/` y se cargan solo cuando la tarea los necesita.
 
@@ -169,7 +172,7 @@ Principios esenciales:
     ├── product/                    # Producto, dominio y features
     ├── architecture/               # Stack, boundaries y patrones
     ├── plans/                      # Trabajo activo, completado y deuda
-    ├── quality/                    # Testing, review y Definition of Done
+    ├── quality/                    # Testing, review, commits y Definition of Done
     ├── security/                   # Principios y amenazas
     └── generated/                  # Referencias derivadas
 ```
@@ -181,6 +184,7 @@ Principios esenciales:
 - [Indice de documentacion](docs/README.md)
 - [Indice de arquitectura](docs/architecture/index.md)
 - [Definition of Done](docs/quality/definition-of-done.md)
+- [Control de versiones](docs/quality/version-control.md)
 - [Principios de seguridad](docs/security/principles.md)
 
 ## Que no incluye
@@ -201,6 +205,7 @@ completar sus especificaciones de producto y mantenerlas junto al codigo.
 - Las instrucciones cercanas al codigo tienen prioridad sobre las globales.
 - Los secretos permanecen fuera del repositorio y del frontend.
 - Los cambios de base de datos usan migraciones.
+- Cada unidad coherente se confirma en su propio commit, no la sesion completa.
 - Las reglas criticas se convierten en tests, linters o automatizacion.
 - Un cambio no esta terminado sin implementacion, verificacion y documentacion coherentes.
 - Los errores repetidos del agente deben transformarse en contexto o controles ejecutables.

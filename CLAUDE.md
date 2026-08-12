@@ -15,5 +15,6 @@ This file mirrors the high-level guidance in `AGENTS.md` for Claude-based workfl
 - Use `docs/` for detailed project knowledge.
 - Use feature specs under `docs/product/features/`.
 - Update docs in the same change that updates behavior.
+- Commit each coherent unit separately, with a short descriptive message.
 - Do not expose secrets or environment values in summaries.
 

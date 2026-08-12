@@ -9,6 +9,8 @@ A change is done only when:
 - New dependencies are justified.
 - Generated files are produced by scripts or documented sources, not manually edited.
 - No secrets are committed.
+- Work is split into coherent commits, each one verified and reviewable on its own.
+- Commit subjects describe what changed, and bodies stay short or absent.
 - pnpm/Corepack commands were used.
 - Stack decisions remain aligned with `docs/architecture/stack.md` or an ADR explains the deviation.
 
