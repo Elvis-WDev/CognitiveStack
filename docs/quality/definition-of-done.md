@@ -7,6 +7,7 @@ A change is done only when:
 - Verification commands pass.
 - API, database, architecture, security, or user workflow docs are updated when behavior changes.
 - New dependencies are justified.
+- Performance-sensitive changes carry before and after numbers; neutral results were reverted.
 - Generated files are produced by scripts or documented sources, not manually edited.
 - No secrets are committed.
 - Work is split into coherent commits, each one verified and reviewable on its own.

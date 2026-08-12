@@ -33,6 +33,7 @@ verificables dentro del propio proyecto.
 | Frontend      | shadcn/ui, Tailwind, formularios, tablas y estados compartidos |
 | UX operativa  | Jerarquia visual, baja fatiga, responsive y accesibilidad      |
 | Calidad       | Definition of Done, testing, code review y observabilidad      |
+| Rendimiento   | Presupuestos, medicion y anti-patrones                         |
 | Seguridad     | Principios, boundaries y threat model                          |
 | Ejecucion     | Planes activos, decisiones y skills reutilizables              |
 | Entrega       | Commits pequenos, mensajes descriptivos y pull requests        |
@@ -127,6 +128,7 @@ Definition of Done. Implementa, verifica y actualiza la documentacion afectada.
 - `update-documentation`: mantener fuentes de verdad y referencias sincronizadas.
 - `implement-operational-frontend`: construir interfaces operativas consistentes y sin sobrecarga visual.
 - `commit-changes`: dividir el trabajo en commits pequenos con mensajes descriptivos.
+- `optimize-performance`: medir antes de optimizar y revertir lo que no supera su baseline.
 
 Los skills viven en `.agents/skills/` y se cargan solo cuando la tarea los necesita.
 
@@ -172,7 +174,7 @@ Principios esenciales:
     ├── product/                    # Producto, dominio y features
     ├── architecture/               # Stack, boundaries y patrones
     ├── plans/                      # Trabajo activo, completado y deuda
-    ├── quality/                    # Testing, review, commits y Definition of Done
+    ├── quality/                    # Testing, review, commits, rendimiento y DoD
     ├── security/                   # Principios y amenazas
     └── generated/                  # Referencias derivadas
 ```
@@ -186,6 +188,7 @@ Principios esenciales:
 - [Definition of Done](docs/quality/definition-of-done.md)
 - [Control de versiones](docs/quality/version-control.md)
 - [Principios de seguridad](docs/security/principles.md)
+- [Rendimiento](docs/quality/performance.md)
 
 ## Que no incluye
 
@@ -206,6 +209,7 @@ completar sus especificaciones de producto y mantenerlas junto al codigo.
 - Los secretos permanecen fuera del repositorio y del frontend.
 - Los cambios de base de datos usan migraciones.
 - Cada unidad coherente se confirma en su propio commit, no la sesion completa.
+- Se mide antes de optimizar, y lo que no supera su baseline se revierte.
 - Las reglas criticas se convierten en tests, linters o automatizacion.
 - Un cambio no esta terminado sin implementacion, verificacion y documentacion coherentes.
 - Los errores repetidos del agente deben transformarse en contexto o controles ejecutables.

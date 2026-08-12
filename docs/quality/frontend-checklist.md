@@ -71,6 +71,13 @@ Use this checklist before completing any user-visible screen.
 - [ ] No overlap occurs at mobile, tablet, desktop, wide desktop, or 200% zoom.
 - [ ] Long text wraps or truncates predictably.
 
+## Performance
+
+- [ ] Lists are paginated or virtualized; nothing unbounded feeds the screen.
+- [ ] Images declare dimensions and lazy-load below the fold.
+- [ ] Heavy, rarely used features are code-split.
+- [ ] No new N+1 request pattern or avoidable request waterfall.
+
 ## Theme And Accessibility
 
 - [ ] Light and dark themes cover page, modal, popover, tooltip, toast, input, table, and charts.
