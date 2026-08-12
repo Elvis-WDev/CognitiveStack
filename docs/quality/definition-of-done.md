@@ -6,7 +6,7 @@ A change is done only when:
 - Acceptance criteria are satisfied or explicitly updated.
 - Verification commands pass.
 - API, database, architecture, security, or user workflow docs are updated when behavior changes.
-- New dependencies are justified.
+- New dependencies are justified, and upgrades were reviewed one package at a time with the lockfile diff.
 - New boundaries validate untrusted input, and authorization is enforced server-side per record.
 - Performance-sensitive changes carry before and after numbers; neutral results were reverted.
 - Generated files are produced by scripts or documented sources, not manually edited.

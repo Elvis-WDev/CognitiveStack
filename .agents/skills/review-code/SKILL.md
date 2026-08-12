@@ -11,6 +11,8 @@ Read:
 
 - `AGENTS.md`
 - `docs/quality/code-review.md`
+- `docs/security/hardening.md`
+- `docs/quality/performance.md`
 - Relevant architecture docs.
 - Relevant feature specification and acceptance criteria.
 - `docs/architecture/stack.md`
@@ -36,6 +38,8 @@ Stack-specific checks:
 ## Output Format
 
 - Findings first, ordered by severity.
+- Label each finding Critical, Required, Consider, Nit, or FYI, so the author knows what blocks merge.
+- Name the structural remedy when the finding is structural; do not report complexity without a move.
 - Include file and line references.
 - Add open questions after findings.
 - Keep summaries secondary.
