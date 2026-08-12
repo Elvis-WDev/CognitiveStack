@@ -23,13 +23,16 @@ registries as source code to review and adapt, not as an independent design syst
 | `RowActionButton`       | Icon action with permission/state handling and opaque tooltip              |
 | `FormDialog`            | Accessible create/edit modal with stable header, body, and footer          |
 | `EntityPickerDialog<T>` | Searchable, filterable, paginated relationship selection                   |
-| `ConfirmDialog`         | Risk-proportional confirmation for destructive or irreversible actions     |
+| `ConfirmDialog`         | Risk-proportional confirmation, with typed name when irreversible          |
 | `DatePickerField`       | Localized, theme-aware date selection with clear behavior                  |
 | `DateTimePickerField`   | Date/time selection with explicit commit when required                     |
 | `PasswordField`         | Masked sensitive input with accessible visibility toggle                   |
+| `FileField`             | Upload, replace, rename, and remove managed files with per-file state      |
 | `IntegerStepperField`   | Bounded whole-number input with increment/decrement controls               |
 | `AsyncButton`           | Stable loading and duplicate-submit prevention                             |
+| `useMutationFeedback`   | Mutation wrapper owning pending state, feedback, and cache invalidation    |
 | `SemanticToaster`       | Shared success, error, warning, information, and loading feedback          |
+| `StatusBadge`           | Shared state label using icon or dot plus color, consistent across modules |
 | `EmptyState`            | Distinguish no data, no matches, missing prerequisite, and no permission   |
 | `ErrorState`            | Sanitized error with safe retry                                            |
 | `PageSkeleton`          | Geometry-preserving initial loading                                        |
@@ -48,6 +51,8 @@ Shared components own interaction consistency, not business policy.
 - `FormDialog` owns focus, dismissal, responsive geometry, and footer placement; the form owns fields and business validation.
 - `EntityPickerDialog` returns selected business records; it does not know a specific entity type.
 - `SemanticToaster` owns visual variants; callers provide human-readable messages.
+- `ConfirmDialog` owns the confirmation ladder; the caller supplies the record label and the consequence.
+- `StatusBadge` owns the visual encoding of a state; the module maps its domain values onto it.
 - `PermissionGate` may hide or disable controls, but cannot replace API authorization.
 - Date and number components own parsing/display boundaries and return canonical values.
 

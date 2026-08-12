@@ -149,6 +149,8 @@ Principios esenciales:
 - usar modales para CRUD breve y paginas completas para workflows complejos;
 - comunicar acciones con feedback semantico sin llenar la pagina de banners;
 - limitar la navegacion visible a dos niveles;
+- separar submodulos en el sidebar en lugar de pestanas dentro de una pagina;
+- confirmar escribiendo el nombre lo irreversible y en un solo paso lo reversible;
 - reutilizar componentes antes de crear variantes por modulo;
 - verificar desktop, mobile, teclado, light mode y dark mode;
 - eliminar contenido redundante que no ayude a decidir o actuar.

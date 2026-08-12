@@ -14,6 +14,25 @@ the destination's filters or internal view selector.
 When a module has only one destination, link the module directly instead of forcing an
 unnecessary expand/collapse step.
 
+## Submodules Instead Of Tabs
+
+A module that covers several areas exposes them as submodules under its sidebar group,
+never as tabs that split one page into several.
+
+A section is a submodule when it has any of:
+
+- its own collection of records;
+- its own create, edit, or delete actions;
+- its own permission;
+- a URL worth linking, reloading, or sharing directly.
+
+Tabs and segmented controls remain valid only for switching lenses over data already on
+screen: a filtered view of the same collection, a table/chart toggle, or grouped read-only
+detail of one open record. They must never stand in for a destination.
+
+This keeps every destination visible in the sidebar, keeps deep links and reloads working,
+and stops one page from silently growing into several unrelated screens.
+
 ## Sidebar
 
 - Use plain labels with consistent Lucide icons, not a stack of decorative boxes.
@@ -27,6 +46,18 @@ unnecessary expand/collapse step.
 
 Desktop may keep frequently used groups expanded when the number of destinations remains
 scannable. Mobile should collapse groups to preserve space.
+
+## Reorderable Navigation
+
+Let users drag navigation groups and destinations into their own order when the product
+serves operators who return to the same few screens every day.
+
+- Persist the order per user; a reload or a new session must not reset it.
+- Provide a keyboard-accessible alternative to dragging.
+- Show a clear drag affordance, an obvious drop target, and the resulting position.
+- Reordering changes presentation only. It never changes permissions, routes, or which destinations exist.
+- Keep the drag gesture from competing with normal selection, especially on touch.
+- Offer a way back to the default order.
 
 ## Header
 
@@ -67,6 +98,7 @@ Do not duplicate the same module title immediately below the header.
 ## Dark And Light Themes
 
 - Use semantic CSS variables, never module-local hardcoded theme colors.
+- When one product ships both an operational panel and a public site, keep their token sets in separate namespaces so restyling one cannot alter the other.
 - Verify background, foreground, border, input, popover, tooltip, toast, destructive, and focus colors in both themes.
 - Keep data visualizations legible and distinguishable without relying only on hue.
 - Persist the user's explicit preference and respect system preference before one is chosen.

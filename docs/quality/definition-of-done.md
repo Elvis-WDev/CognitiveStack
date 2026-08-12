@@ -31,6 +31,10 @@ For frontend work:
 - shadcn/ui conventions are followed.
 - Authenticated and unauthenticated states are handled.
 - Shared patterns are used for tables, pagination, filters, forms, dialogs, toasts, tooltips, date inputs, and navigation.
+- Every module's list, create, edit, detail, and removal paths work against the real backend.
+- Sections with their own records, actions, or permissions are sidebar submodules, not tabs.
+- Every mutation reports pending, success, and error through the shared feedback helper.
+- Destructive actions follow the confirmation ladder in `docs/architecture/forms-and-workflows.md`.
 - No raw IDs, storage paths, provider internals, auth implementation names, secret references, or backend-only metadata are exposed without a documented user need.
 - Module headings, summaries, cards, helper copy, and controls are not duplicated.
 - Action feedback is semantic and transient; persistent page banners are reserved for states that remain relevant after the action ends.

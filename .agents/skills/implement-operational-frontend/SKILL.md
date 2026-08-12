@@ -31,7 +31,7 @@ Read:
 6. Keep internal identifiers in values only. Render business labels and backend-generated references.
 7. Verify permissions in UI and rely on backend enforcement as the authority.
 8. Exercise keyboard, touch, responsive layouts, long content, light/dark themes, repeated actions, slow requests, and stale responses.
-9. Run project verification and complete the frontend checklist.
+9. Run project verification, complete the frontend checklist, and report every requested criterion as met or as a declared exception with its reason.
 10. Update architecture or feature docs when the workflow or shared component contract changes.
 
 ## Component Decisions
@@ -45,11 +45,18 @@ Read:
 - Use a full page for long, high-risk, multi-section workflows.
 - Use searchable comboboxes or table-selection modals for relationships.
 - Use persisted backend jobs for work that must survive modal close, navigation, or refresh.
+- Use sidebar submodules instead of tabs when a section owns its own records, actions, or permission.
+- Use the shared status badge, with icon or dot beside the color, for state columns.
+- Use typed confirmation for irreversible actions and a single step for reversible ones.
+- Use the shared file field for upload, replacement, rename, and removal.
 
 ## Guardrails
 
 - Do not expose raw IDs, auth/framework names, provider internals, storage paths, secrets, or backend metadata without a documented operational need.
 - Do not create a third navigation level.
+- Do not split a module into tabbed pages.
+- Do not ship a mutation without pending, success, and error feedback.
+- Do not narrate the system in the third person or cite internal specifications in visible copy.
 - Do not invent module-specific pagination, toast, tooltip, date input, dialog, or table behavior.
 - Do not nest cards or use decorative panels as page structure.
 - Do not add KPI cards that repeat table information or do not change a decision.

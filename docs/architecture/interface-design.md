@@ -27,11 +27,16 @@ If these answers are missing, do not compensate with more cards, text, or contro
 | Complete a long, high-risk, multi-section workflow | Full page                      |
 | Inspect one record without losing list context     | Detail modal or drawer         |
 | Adjust a small local value                         | Inline control when reversible |
-| Switch between closely related configuration areas | Internal labels/tabs           |
+| Switch lenses or filters over one collection       | Internal view selector         |
+| Reach a section with its own records and actions   | Sidebar submodule              |
 | Monitor a few decision-driving metrics             | Compact dashboard              |
 
 Do not put a full CRUD form permanently next to its table. Do not use a modal for a
 workflow that needs extensive context, several sections, or comparison while editing.
+
+Do not use tabs to separate the pages of a module. A section with its own records,
+actions, or permission is a destination and belongs in the sidebar, not behind a tab. See
+`navigation-responsive.md`.
 
 ## Module Composition
 
@@ -44,6 +49,10 @@ A standard list module should usually contain:
 
 Remove the module header when the page title and table title already communicate the
 same thing. Never repeat the same title and description in consecutive containers.
+
+A module is complete when everything it offers works end to end against the real backend:
+list, create, edit, detail, and the removal or deactivation the domain allows. A list that
+renders while its create dialog fails is an unfinished module.
 
 ## Information Hierarchy
 
@@ -104,6 +113,17 @@ Show what the user recognizes:
 - a status label instead of an enum token;
 - a masked secret state instead of a credential reference;
 - a generated human reference when a record needs one.
+
+### Voice
+
+Write for someone who must understand the screen the first time they read it:
+
+- address the user directly; do not narrate the system in the third person;
+- name the action and the object, not the mechanism that performs it;
+- do not explain business rules, internal processes, or third-party services in the interface;
+- do not quote requirement documents, ticket numbers, or specification sections in visible copy;
+- keep that traceability in code comments or documentation, never on the product surface;
+- delete any sentence the user does not need in order to decide or act.
 
 Technical detail belongs in permission-gated audit or diagnostic views.
 

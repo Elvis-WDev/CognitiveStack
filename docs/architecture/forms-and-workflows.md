@@ -14,6 +14,16 @@
 Do not force every action into a modal. Do not embed every create/edit form permanently
 inside a list module.
 
+For records that live in a table, the modal is the default container for create and edit.
+Move to a full page only when the dialog would genuinely fail the task, such as when:
+
+- the record contains child collections the user manages while editing it;
+- the screen is not a row of any table, such as a profile or an application-wide setting;
+- the workflow needs draft, validation, and submission as separate stages.
+
+An exception is a decision to declare in the feature specification, not a preference to
+exercise silently.
+
 ## Form Construction
 
 - Use React Hook Form for state and Zod for validation.
@@ -29,6 +39,17 @@ inside a list module.
 Positive per-field messages should be reserved for sensitive or error-prone input. A
 screen full of `Dato valido` text creates noise without improving confidence.
 
+## Rules The Server Enforces
+
+The backend stays authoritative, but the screen should not let a user assemble a request
+the API is known to reject.
+
+- Mirror known constraints as validation, disabled options, or filtered choices.
+- Read the constraint from the backend when it is configurable; do not keep a second copy in the screen.
+- Explain the blocked state where the user is blocked, not after submission.
+- Still handle the rejection when it arrives. A mirrored rule is a convenience, never a guarantee.
+- Never present a frontend check as authorization.
+
 ## Business-Facing Relationships
 
 Never ask users to type a foreign key, UUID, auth account ID, storage key, or generated
@@ -43,6 +64,10 @@ code. Use:
 The request may submit an ID, but the control displays the recognizable business label.
 
 Selections across paginated modal tables persist until confirmed or cancelled.
+
+Related records stay reachable. A reference shown in a table or a detail view leads to the
+record it names, and a record that cannot be removed because others depend on it says which
+relationship blocks it.
 
 ## Conditional Fields
 
@@ -60,6 +85,22 @@ Selections across paginated modal tables persist until confirmed or cancelled.
 - File inputs show filename, type, size, validation state, and replacement intent without exposing server paths.
 - Validate sensitive files server-side; client extension checks are only early feedback.
 - Never display secret references or certificate locations in tables.
+
+### Managed Files
+
+When a record owns uploaded files, the interface covers the whole lifecycle, not only the
+first upload:
+
+- accept one or several files wherever the record allows more than one, with visible progress;
+- show name, type, size, and validation result per file;
+- replace one file without disturbing the rest of the record;
+- rename or relabel a file when users will later search for it by name;
+- remove a file with confirmation proportional to whether it can be recovered;
+- report per-file failures without discarding the files that succeeded;
+- keep storage paths, buckets, and provider names out of the interface.
+
+State the accepted types and the size limit before the user picks a file, not only after a
+rejection.
 
 ## Date, Time, Number, And Option Inputs
 
@@ -116,3 +157,21 @@ for generic instructions that could be concise helper text.
 - Prefer archive, deactivate, revoke, or soft delete when history and relationships matter.
 - Explain consequences before destructive actions.
 - Never let frontend cascade assumptions replace backend integrity rules.
+
+## Confirmation Ladder
+
+Match the friction to how hard the action is to undo:
+
+| Action                                                 | Confirmation                                         |
+| ------------------------------------------------------ | ---------------------------------------------------- |
+| Reversible change such as hide, archive, or deactivate | Single explicit step, no typing                      |
+| Irreversible deletion or permanent data loss           | Two steps: intent, then typing the exact record name |
+| Irreversible bulk action                               | Two steps plus the number of affected records        |
+
+Rules:
+
+- Name the record and the consequence in the dialog. Never ask only "Are you sure?".
+- Keep the confirming action disabled until the typed value matches exactly.
+- Ask for the label the user already sees in the list, never an internal identifier.
+- Style the confirming action as destructive and never give it initial focus.
+- Do not spend a second step on actions the user can undo; reserve the cost for real loss.

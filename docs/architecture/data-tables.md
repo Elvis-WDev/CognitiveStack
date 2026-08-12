@@ -17,6 +17,10 @@ relearn search, filters, columns, pagination, or actions in each module.
 
 Keep controls in the same order and pagination component across the application.
 
+Alignment must also hold from one module to the next: the same control heights, the same
+cell padding, numbers aligned the same way, and the actions column at the same edge. A
+user moving between modules should not notice the table change.
+
 ## Shared Component Contract
 
 The application table should support:
@@ -59,6 +63,18 @@ Avoid a separate oversized filter card above the table.
 - Do not allow column visibility to hide the only meaningful record identity or action access.
 
 Column names, empty values, and units must be understandable without source-code knowledge.
+
+## Visual Encoding
+
+Let the user recognize a value without reading every cell.
+
+- Use one shared status badge for every state column in the application.
+- Encode meaning with an icon, a dot, or text in addition to color. Color alone is not a state.
+- Keep the same value in the same treatment everywhere; a state must not change color between modules.
+- Add a badge, icon, or inline control only when it speeds a decision. Plain text is correct for the rest.
+- Keep badge and control dimensions stable so rows do not change height.
+- Use an inline control in a cell only for a reversible change with immediate feedback.
+- Do not color whole rows for routine states; reserve that for a condition that needs attention now.
 
 ## Row Actions
 
@@ -107,9 +123,11 @@ Do not replace the entire page with a spinner for routine table refreshes.
 Reject the implementation when:
 
 - pagination differs from neighboring modules;
+- controls, alignment, or spacing drift from neighboring modules;
 - filters sit in a detached decorative section;
 - row actions lack tooltips or feedback;
 - the table exposes internal identifiers;
+- a state is communicated only by color;
 - changing pages loses intentional selection;
 - loading causes layout jumps;
 - mobile content overlaps or becomes unreachable;

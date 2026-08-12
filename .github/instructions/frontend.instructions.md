@@ -10,5 +10,9 @@ Apply to frontend files.
 - Reuse shared data-table, form, dialog, toast, date, tooltip, pagination, and navigation primitives.
 - Keep internal identifiers and implementation details out of user-facing labels and inputs.
 - Prefer table-first module screens and focused workflows over decorative cards, duplicated summaries, and persistent success banners.
+- Use sidebar submodules instead of tabs to separate the pages of a module.
+- Route every mutation through the shared feedback helper so no action ends without pending, success, or error feedback.
+- Require typed confirmation for irreversible actions and a single step for reversible ones.
+- Write copy that addresses the user directly, without third-person narration or internal process detail.
 - Verify light/dark themes and desktop/mobile layouts before completion.
 - Update frontend documentation when user-visible workflows change.

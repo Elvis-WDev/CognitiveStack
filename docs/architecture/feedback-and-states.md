@@ -46,6 +46,26 @@ Requirements:
 Map known backend error codes to business messages. Unknown errors receive a safe generic
 message and a correlation reference only when support can use it.
 
+## Bind Feedback To The Mutation
+
+Route every create, update, delete, upload, and state change through one shared mutation
+helper that owns feedback. Whether the user hears back should not depend on each module
+remembering to add it.
+
+The shared helper owns:
+
+- the pending state of the initiating control and duplicate-submit prevention;
+- the success toast and the data invalidation that follows it;
+- the mapping from known backend error codes to business messages;
+- the safe fallback message for unknown failures;
+- deduplication of repeated identical results.
+
+The caller supplies the request and the human-readable messages only.
+
+No asynchronous path may end without a resolved outcome. Every request has a handled
+failure branch that leaves the interface usable and the user informed. A mutation with no
+feedback path is an incomplete implementation, not a minor omission.
+
 ## Loading
 
 - Keep geometry stable.

@@ -67,6 +67,9 @@ Use pnpm through Corepack. Replace placeholders only when the project exposes di
 - Do not expose internal IDs, provider names, storage paths, auth implementation details, or other technical references in product UI when a business-facing label or automatic backend value is possible.
 - Reuse the documented table, form, dialog, feedback, navigation, and responsive patterns instead of inventing a different interaction model per module.
 - Optimize operational screens for scanning and repeated work. Remove redundant summaries, duplicated headings, explanatory boxes, and nested cards that do not help the user decide or act.
+- Separate a module's areas as sidebar submodules, not as tabs inside one page.
+- Route every mutation through the shared feedback helper; no action ends without pending, success, or error feedback.
+- Confirm irreversible actions by typing the record name, and keep reversible ones to a single step.
 
 ## Definition Of Done
 
