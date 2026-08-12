@@ -79,6 +79,25 @@ renders while its create dialog fails is an unfinished module.
 
 Whitespace should clarify groups, not make an operational screen sparse and scroll-heavy.
 
+## Generated Defaults To Avoid
+
+Generated interfaces converge on the same recognizable choices. They are not neutral, and
+they make every product look alike. The guardrails above already cover gradients, oversized
+radii, and ornamental backgrounds; these are the rest:
+
+| Default                                | Why it fails                                                        |
+| -------------------------------------- | ------------------------------------------------------------------- |
+| A violet or indigo palette by habit    | Signals a template rather than this product's palette               |
+| Uniform maximum corner rounding        | Erases the radius hierarchy that real systems use to group elements |
+| A generic hero section                 | Layout chosen before content, unrelated to the user's task          |
+| Placeholder prose instead of real copy | Hides wrapping, length, and overflow problems until production      |
+| Uniform card grids for everything      | Ignores information priority and how the user scans                 |
+| Layered shadows for depth              | Competes with content and costs rendering on low-end devices        |
+| Generous equal padding everywhere      | Destroys hierarchy and wastes the screen on operational work        |
+
+Use the project's real palette, spacing scale, radius set, and content. Never invent a
+spacing or radius value that is not on the scale.
+
 ## Cards, Bands, And Containers
 
 Use cards for repeated entities, bounded tools, dialogs, and genuinely independent
