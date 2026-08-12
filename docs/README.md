@@ -7,8 +7,8 @@ Use this directory as the project knowledge base.
 - `product/`: what the system does and why.
 - `architecture/`: how the system is built and constrained.
 - `plans/`: current and completed implementation plans.
-- `quality/`: testing, review, observability, and done criteria.
-- `security/`: security principles and threat model.
+- `quality/`: testing, review, version control, performance, observability, and done criteria.
+- `security/`: security principles, hardening controls, and threat model.
 - `generated/`: generated or derived references.
 
 ## Maintenance Rule

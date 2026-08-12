@@ -27,6 +27,7 @@ Read:
 7. Update generated references when contracts change.
 8. Update feature decisions or ADRs when architecture changes.
 9. Run the project verification command.
+10. Commit each coherent unit separately, following `docs/quality/version-control.md`.
 
 ## Guardrails
 

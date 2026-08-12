@@ -57,6 +57,14 @@ External registries may provide a starting point, but inspect installed code, re
 demo assumptions, map colors to project tokens, verify accessibility, and align it with
 the existing component contract before use. Do not accumulate near-duplicate primitives.
 
+## Component Construction
+
+- Colocate a component with its tests, its hook, and its own types.
+- Prefer composition over configuration. A component with many appearance props is usually several components.
+- Separate data from presentation: one piece resolves loading, error, and empty; the other renders a value it was given.
+- Keep a component focused on one job. A file that keeps growing is decomposed before more is added to it.
+- Do not pass a prop through more than about three layers that do not use it. Restructure or use context instead.
+
 ## Technical Information Boundary
 
 The frontend may carry internal IDs in values and requests, but should present labels,

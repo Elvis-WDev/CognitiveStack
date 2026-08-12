@@ -38,6 +38,9 @@ Who uses this feature?
 - Information that must remain hidden or backend-generated:
 - Search, filters, sorting, pagination, and row actions:
 - Create/edit interaction: modal, drawer, inline control, or full page, with reason:
+- Sections that become sidebar submodules instead of tabs:
+- Confirmation level for each destructive action, and whether it can be undone:
+- Files the record owns, and their upload, replacement, rename, and removal behavior:
 - Loading, empty, success, error, partial, and permission states:
 - Mobile and keyboard behavior:
 - Existing shared components to reuse:
