@@ -8,15 +8,18 @@ perform the primary task without reading implementation commentary.
 
 ## Start From The User Task
 
-Before building, answer:
+The screen brief in `cognitive-architecture.md` is answered before this document applies:
+who uses the screen, what they are trying to accomplish, the primary decision, the minimum
+information that decision needs, and the single primary action.
 
-1. Who uses this screen and how often?
-2. What decision or action is primary?
-3. What information is required before that action?
-4. What belongs in detail, history, or an advanced view?
-5. Which fields can the backend derive?
+With those answers settled, place the content:
 
-If these answers are missing, do not compensate with more cards, text, or controls.
+1. What belongs in the initial view, and what belongs in detail, history, or an advanced view?
+2. Which fields can the backend derive instead of asking the user for them?
+3. Which information is P0, P1, P2, or P3?
+
+If the brief is missing, do not compensate with more cards, text, or controls. Go back and
+answer it.
 
 ## Choose The Primary Surface
 
@@ -37,6 +40,34 @@ workflow that needs extensive context, several sections, or comparison while edi
 Do not use tabs to separate the pages of a module. A section with its own records,
 actions, or permission is a destination and belongs in the sidebar, not behind a tab. See
 `navigation-responsive.md`.
+
+## Standard Mental Models
+
+Prefer the pattern the user already knows. Reinventing an interaction is justified only by a
+functional problem the established pattern cannot solve, and that reason belongs in the
+feature specification.
+
+| Need                                 | Established pattern       |
+| ------------------------------------ | ------------------------- |
+| Persistent navigation                | Sidebar                   |
+| Position in a hierarchy, and the way back | Breadcrumb           |
+| Sibling views over data already on screen | Tabs or segmented control |
+| Secondary options                    | Dropdown menu             |
+| A temporary, focused decision        | Modal                     |
+| Contextual detail without losing the list | Drawer or sheet      |
+| Comparing entities                   | Table                     |
+| A sequence of events                 | Timeline                  |
+| Work moving through stages           | Kanban                    |
+| A guided multi-step process          | Wizard                    |
+
+## Master And Detail
+
+When the user inspects many records in a row, keep the collection and open the record
+beside it: table plus drawer or detail modal. Move to a full detail page when the work is
+deep, owns its own sections, or needs a URL worth sharing.
+
+Either way, returning restores the list as the user left it: filters, sorting, page, scroll
+position, and selection. See `cognitive-architecture.md`.
 
 ## Module Composition
 
@@ -115,9 +146,13 @@ objects. Use unframed sections or full-width bands for page structure. Keep radi
 
 ## Dashboards
 
-Dashboards summarize decisions; they are not a substitute for modules.
+Dashboards summarize decisions; they are not a substitute for modules, and they are not a
+gallery of KPIs. A dashboard answers four questions: what is happening, what changed, what
+needs attention, and what to do about it. Order the screen the same way: attention first,
+then results, then trend, then analysis, then the records behind them.
 
 - Keep KPI count small and attach context such as period, trend, or comparison.
+- Do not give ten metrics the same weight. One of them is why the user opened the screen.
 - Use charts only when shape, composition, or change is easier to understand visually.
 - Keep operational tables after summaries when users need to inspect the underlying records.
 - Do not duplicate the same aggregate in a KPI, chart, and summary list.
