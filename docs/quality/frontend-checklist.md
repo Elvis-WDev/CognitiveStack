@@ -1,10 +1,21 @@
 # Frontend Review Checklist
 
-Use this checklist before completing any user-visible screen.
+Use this checklist before completing any user-visible screen. The first section is checked
+before implementation starts.
+
+## Before You Build
+
+- [ ] The screen brief is answered in writing: user, goal, primary decision, minimum information, single primary action.
+- [ ] The screen is framed as a user job, not as an entity page.
+- [ ] Information is tiered P0-P3, and nothing from P3 sits in the initial view.
+- [ ] Nothing is planned for the screen only because the backend returns it.
+- [ ] The action budget holds: one primary action, one or two visible secondary ones, the rest disclosed.
 
 ## Task And Hierarchy
 
 - [ ] The primary user, task, and action are clear.
+- [ ] Orientation lands in about two seconds: context, title, state, leading information, primary action.
+- [ ] Exactly one action carries primary weight, and its copy names the action and its object.
 - [ ] The chosen surface matches the workflow: table, modal, detail, dashboard, or full page.
 - [ ] Sections that own records, actions, or permissions are sidebar submodules, not tabs.
 - [ ] Everything the module offers works end to end: list, create, edit, detail, and removal.
@@ -22,9 +33,19 @@ Use this checklist before completing any user-visible screen.
 - [ ] Numbers, money, dates, times, percentages, and empty values are consistently formatted.
 - [ ] Copy addresses the user directly, with no third-person narration, internal process detail, or specification references.
 
+## Foundations
+
+- [ ] Spacing, radius, type, color, z-index, and duration values come from the documented scales.
+- [ ] Grouping is expressed with space and alignment before borders or cards.
+- [ ] Accent color stays within its budget, and no state relies on color alone.
+- [ ] Every interactive element covers default, hover, focus-visible, active, disabled, and loading.
+- [ ] Feedback appears within about 100ms, and every animation explains a change.
+
 ## Tables
 
 - [ ] Shared table and pagination components are used.
+- [ ] Default columns match what the primary decision needs.
+- [ ] The row opens the record, and visible row actions stay within budget.
 - [ ] Search, filters, sorting, columns, and row actions follow the application contract.
 - [ ] Pagination is deterministic and matches every other module.
 - [ ] Control order, alignment, and spacing match the other modules.
@@ -87,6 +108,21 @@ Use this checklist before completing any user-visible screen.
 - [ ] Contrast meets 4.5:1 for body text and 3:1 for large text and meaningful icons.
 - [ ] Touch targets are at least 44px.
 - [ ] Reduced motion is respected for nonessential animation.
+
+## Screen Audit
+
+Answer these by looking at the finished screen, not at the code.
+
+- [ ] **Two seconds**: where am I, what is this, and what is the main action?
+- [ ] **Visual anxiety**: after five seconds, do the eyes know where to start, or does everything compete for attention?
+- [ ] **Elimination**: for each element, what breaks if it leaves the initial view? Remove or disclose whatever answers "nothing".
+- [ ] **New user**: could someone who never saw the code or the database tell what this does, where they are, and what happens next?
+- [ ] **Recurring user**: can a daily user filter, act, repeat, and keep context without unnecessary steps?
+- [ ] **Task cost**: decisions, clicks, context switches, and remembered values are counted, and each one is justified.
+- [ ] **Consistency**: same state, same badge; same action, same component; same kind of detail, same pattern; same hierarchy, same type scale.
+
+A screen that makes the user feel they must understand everything before acting has failed,
+even when every requirement is implemented.
 
 ## Verification Evidence
 

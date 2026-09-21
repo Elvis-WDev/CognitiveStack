@@ -28,6 +28,12 @@ For backend work:
 
 For frontend work:
 
+- The screen brief is recorded, and information is tiered P0-P3.
+- Exactly one action carries primary weight, within the documented action budget.
+- Nothing is displayed only because the backend returns it.
+- Visual values come from the documented scales; no arbitrary spacing, color, radius, or duration.
+- Interactive elements cover their states, and every animation explains a change.
+- No control ships without backend support, and no screen ships on mocked data.
 - Loading, empty, success, and error states are handled.
 - Forms use validation.
 - Large lists are paginated or virtualized.
