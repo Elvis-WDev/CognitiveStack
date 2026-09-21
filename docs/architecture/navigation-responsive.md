@@ -41,6 +41,7 @@ and stops one page from silently growing into several unrelated screens.
 - Keep a selected child visually distinct without making its parent look selected.
 - Use a small consistent radius for active/hover states.
 - Group destinations by user workflow and permissions, not backend package structure.
+- Name destinations in the user's words: `Facturas`, `Clientes`, `Proyectos`. Internal service, module, or agent names do not belong in navigation.
 - Keep configuration and help in predictable lower positions.
 - Hide destinations the user cannot access, but enforce permissions again on routes and APIs.
 
@@ -86,6 +87,25 @@ Do not duplicate the same module title immediately below the header.
 
 ## Responsive Layout
 
+Responsive is not a smaller desktop. Each breakpoint restates the interaction: what the user
+can do there, in what order, and how much is on screen at once.
+
+| Viewport | Intent                                                                        |
+| -------- | ----------------------------------------------------------------------------- |
+| Desktop  | Maximum operational density: collection, context, and actions together        |
+| Tablet   | Fewer columns and panels, secondary context on demand                         |
+| Mobile   | One task at a time, sequential navigation, contextual actions                 |
+
+Transform instead of compressing:
+
+| Desktop                    | Mobile                                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------ |
+| Wide operational table     | Horizontal scroll when the user compares rows, a prioritized card list when they act on one |
+| Multi-panel layout         | Sequential navigation between panels                                                        |
+| Persistent sidebar         | Drawer or sheet                                                                             |
+| Dense toolbar              | Search plus progressive filters                                                             |
+| Primary action in a header | Sticky action when the task depends on it                                                   |
+
 - Define stable responsive constraints for tables, boards, toolbars, counters, and fixed-format controls.
 - Let toolbars wrap by control group rather than compressing inputs below usable width.
 - Use one column for forms when side-by-side fields become cramped.
@@ -113,10 +133,15 @@ Do not duplicate the same module title immediately below the header.
 
 ## Accessibility
 
-The baseline is WCAG 2.1 level AA.
+The baseline is WCAG 2.2 level AA. Accessibility is part of the initial architecture, not a
+later pass.
 
 - Use landmarks and one logical heading hierarchy, without skipping levels.
 - Preserve visible focus and keyboard order.
+- Keep the focused element unobscured by sticky headers, footers, or floating controls.
+- Provide a pointer-free alternative to every drag interaction.
+- Keep help, account, and support controls in the same place across pages.
+- Do not require a memory or puzzle step to authenticate, and allow pasting into password fields.
 - Give icon-only buttons accessible names.
 - Associate labels, descriptions, and errors with form controls.
 - Ensure dialogs manage focus and announce their title.

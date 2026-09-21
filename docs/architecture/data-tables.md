@@ -121,10 +121,10 @@ Do not replace the entire page with a spinner for routine table refreshes.
 
 ## Responsive Behavior
 
-- Let dense tables scroll horizontally within their surface.
+- Choose per table: horizontal scroll inside the surface when the mobile user compares rows, a prioritized card list when they act on one record at a time. See `navigation-responsive.md`.
+- Never compress a wide table into columns too narrow to read.
 - Keep primary identity and actions reachable.
 - Allow toolbar controls to wrap into logical rows.
-- Do not turn every table into unrelated cards unless the mobile task truly benefits.
 - Use sticky headers only when they do not cover page controls or modal headers.
 - Test long unbroken values and 200% zoom.
 
