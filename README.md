@@ -1,6 +1,8 @@
 # CognitiveStack
 
-![CognitiveStack](CognitiveStack.png)
+<p align="center">
+  <img src="CognitiveStack.png" alt="CognitiveStack" width="50%">
+</p>
 
 Software engineering specifications, prompt architectures, and modular skills for building
 agentic systems.
