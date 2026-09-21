@@ -15,5 +15,6 @@ Use this directory as the project knowledge base.
 
 When code changes behavior, update the relevant document in the same pull request.
 
-For frontend work, start with `architecture/frontend.md`, open only the relevant
-interface-pattern documents, and finish with `quality/frontend-checklist.md`.
+For frontend work, answer the screen brief in `architecture/cognitive-architecture.md`
+first, then start with `architecture/frontend.md`, open only the relevant interface-pattern
+documents, and finish with `quality/frontend-checklist.md`.
