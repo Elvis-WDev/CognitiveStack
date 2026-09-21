@@ -12,6 +12,27 @@ Prefer shadcn/ui primitives styled through semantic Tailwind tokens. Use Lucide 
 instead of hand-drawn SVGs when a suitable icon exists. Treat third-party component
 registries as source code to review and adapt, not as an independent design system.
 
+## System Layers
+
+Keep one direction of dependency, from generic to specific:
+
+```text
+primitives -> system components -> domain components -> features -> pages
+```
+
+| Layer            | Knows about                            | Example                    |
+| ---------------- | -------------------------------------- | -------------------------- |
+| Primitive        | Tokens and interaction mechanics       | `Button`                   |
+| System component | Application-wide interaction contracts | `AppDataTable`, `FormDialog` |
+| Domain component | One business concept                   | `ApprovalDecision`         |
+| Feature          | One workflow                           | `ApprovalPanel`            |
+| Page             | Routing, layout, and data loading      | `ApprovalScreen`           |
+
+- A layer may use the layers below it, never the ones above.
+- Business rules never sink into a primitive or a system component.
+- A page composing primitives directly is fine. A primitive importing a domain type is not.
+- Do not promote something used once into a domain component. Compose it in place until repetition proves the concept.
+
 ## Recommended Inventory
 
 | Example contract        | Responsibility                                                             |
