@@ -1,7 +1,7 @@
 # CognitiveStack
 
 <p align="center">
-  <img src="CognitiveStack.png" alt="CognitiveStack" width="50%">
+  <img src="CognitiveStack.png" alt="CognitiveStack" width="75%">
 </p>
 
 Software engineering specifications, prompt architectures, and modular skills for building
