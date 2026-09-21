@@ -1,84 +1,70 @@
-# ExpressJS Agent Context
+# CognitiveStack
 
-Context engineering kit para construir aplicaciones fullstack con Express.js,
-Next.js y agentes de IA sin perder consistencia arquitectonica, calidad ni criterio de
-interfaz.
+![CognitiveStack](CognitiveStack.png)
 
-Este repositorio no es un starter de codigo. Contiene un sistema de conocimiento en
-Markdown para que Codex, Claude, GitHub Copilot y otros agentes puedan entender como
-trabajar en un proyecto antes de modificarlo.
+Software engineering specifications, prompt architectures, and modular skills for building
+agentic systems.
+
+`agent-skills` · `prompt-engineering` · `system-architecture` · `llm` · `workflows`
+
+## Que es
+
+CognitiveStack es un sistema de conocimiento en Markdown que un proyecto instala junto a su
+codigo para que los agentes de IA sepan como trabajar antes de modificar nada.
+
+No es un starter de codigo ni una libreria. Es la capa de contexto: especificaciones de
+ingenieria, limites arquitectonicos, criterios de interfaz, reglas de calidad y seguridad, y
+skills reutilizables, escritos para que Codex, Claude, GitHub Copilot u otro agente lean lo
+mismo y lleguen a las mismas decisiones.
 
 ## Por que existe
 
-Un agente puede generar codigo rapidamente, pero sin contexto persistente suele:
+Un agente genera codigo rapidamente, pero sin contexto persistente suele:
 
 - inventar patrones distintos en cada modulo;
 - mezclar reglas de negocio con infraestructura;
 - duplicar componentes y documentacion;
-- exponer detalles tecnicos en la interfaz;
+- construir interfaces desde el esquema de base de datos;
+- exponer detalles tecnicos en pantalla;
 - omitir estados, permisos, pruebas o migraciones;
 - depender de conversaciones que el siguiente agente no conoce.
 
-Este repositorio convierte esas decisiones en instrucciones versionadas, navegables y
-verificables dentro del propio proyecto.
+CognitiveStack convierte esas decisiones en instrucciones versionadas, navegables y
+verificables dentro del propio repositorio.
 
-## Que obtienes
+## Que contiene
 
-| Area          | Contexto incluido                                              |
-| ------------- | -------------------------------------------------------------- |
-| Agentes       | Instrucciones para Codex, Claude y GitHub Copilot              |
-| Arquitectura  | Express.js, Next.js, limites por capas e integraciones         |
-| Datos         | PostgreSQL, Prisma y migraciones versionadas                   |
-| Autenticacion | Better Auth y reglas para no reinventar sesiones               |
-| Frontend      | shadcn/ui, Tailwind, formularios, tablas y estados compartidos |
-| UX operativa  | Jerarquia visual, baja fatiga, responsive y accesibilidad      |
-| Diseno visual | Tokens, escalas de espaciado, tipografia, color y motion       |
-| Criterio UX   | Brief de pantalla, niveles de informacion y presupuesto de acciones |
-| Calidad       | Definition of Done, testing, code review y observabilidad      |
-| Rendimiento   | Presupuestos, medicion y anti-patrones                         |
-| Seguridad     | Principios, hardening por frontera y threat model              |
-| Ejecucion     | Planes activos, decisiones y skills reutilizables              |
-| Entrega       | Commits pequenos, mensajes descriptivos y pull requests        |
+| Area           | Contexto incluido                                                     |
+| -------------- | --------------------------------------------------------------------- |
+| Agentes        | Instrucciones para Codex, Claude y GitHub Copilot                     |
+| Arquitectura   | Express.js, Next.js, limites por capas e integraciones                |
+| Datos          | PostgreSQL, Prisma y migraciones versionadas                          |
+| Autenticacion  | Better Auth y reglas para no reinventar sesiones                      |
+| Frontend       | shadcn/ui, Tailwind, formularios, tablas y estados compartidos        |
+| Criterio UX    | Brief de pantalla, niveles de informacion y presupuesto de acciones   |
+| Diseno visual  | Tokens, escalas de espaciado, tipografia, color y motion              |
+| Calidad        | Definition of Done, testing, code review y observabilidad             |
+| Rendimiento    | Presupuestos, medicion y anti-patrones                                |
+| Seguridad      | Principios, hardening por frontera y threat model                     |
+| Ejecucion      | Planes activos, decisiones y skills reutilizables                     |
+| Entrega        | Commits pequenos, mensajes descriptivos y pull requests               |
+
+### Skills
+
+Procedimientos que se cargan solo cuando la tarea los necesita, en `.agents/skills/`:
+
+`implement-feature` · `implement-operational-frontend` · `create-migration` · `review-code`
+· `harden-security` · `optimize-performance` · `update-documentation` · `commit-changes`
 
 ## Stack de referencia
 
-- Node.js y TypeScript.
-- Express.js para API REST.
-- Next.js y React para frontend.
-- Better Auth para identidad y sesiones.
-- PostgreSQL como base de datos principal.
-- Prisma para ORM y migraciones.
-- Tailwind CSS y shadcn/ui para interfaz.
-- React Hook Form y Zod para formularios.
-- Axios para integraciones HTTP server-side.
-- pnpm mediante Corepack.
-- Docker para desarrollo y despliegue.
+Node.js y TypeScript, Express.js para la API REST, Next.js y React en el frontend, Better
+Auth para identidad y sesiones, PostgreSQL con Prisma, Tailwind CSS y shadcn/ui, React Hook
+Form con Zod, Axios para integraciones server-side, pnpm mediante Corepack y Docker para
+desplegar.
 
-El stack es una decision base, no una restriccion irreversible. Si un proyecto necesita
-desviarse, debe registrar la razon y sus consecuencias en un ADR.
-
-## Inicio rapido
-
-Para iniciar un proyecto nuevo desde esta base documental:
-
-```bash
-git clone --depth 1 https://github.com/Elvis-WDev/ExpressJS-agent-context.git context-template
-rsync -av --exclude='.git' context-template/ ruta/de/tu-proyecto/
-rm -rf context-template
-```
-
-Luego completa, como minimo:
-
-1. Reemplaza `{{PROJECT_NAME}}` en `AGENTS.md`.
-2. Define proposito, usuarios y workflows en [docs/product/overview.md](docs/product/overview.md).
-3. Modela entidades y reglas en [docs/product/domain-model.md](docs/product/domain-model.md).
-4. Revisa el stack en [docs/architecture/stack.md](docs/architecture/stack.md).
-5. Ajusta los comandos reales de verificacion en `AGENTS.md`.
-6. Crea las primeras especificaciones bajo `docs/product/features/`.
-7. Registra trabajos no triviales en `docs/plans/active/`.
-
-Si el proyecto ya existe, copia la estructura documental y adapta cada archivo a la
-arquitectura real antes de pedir cambios al agente.
+El stack es una decision base, no una restriccion irreversible. Un proyecto que necesita
+desviarse registra la razon y sus consecuencias en un ADR.
 
 ## Como funciona el contexto
 
@@ -102,75 +88,20 @@ docs/quality/ + docs/security/
 La idea no es cargar todo el repositorio en cada prompt. El agente empieza con un mapa
 pequeno y abre solamente la fuente de verdad relevante para la tarea.
 
-## Flujo recomendado con agentes
+## Criterio de interfaz
 
-1. Leer `AGENTS.md` y las instrucciones mas cercanas al codigo afectado.
-2. Abrir la especificacion y arquitectura relacionadas con la tarea.
-3. Crear o actualizar un plan cuando el trabajo sea no trivial.
-4. Implementar el cambio coherente mas pequeno.
-5. Ejecutar formato, lint, tipos, pruebas y build.
-6. Actualizar documentacion y referencias derivadas.
-7. Confirmar cada unidad coherente en su propio commit con un mensaje corto y descriptivo.
-8. Registrar decisiones costosas o duraderas mediante ADR.
-9. No declarar terminado mientras implementacion, pruebas y documentacion difieran.
-
-Ejemplo de solicitud inicial:
-
-```text
-Lee AGENTS.md y la documentacion relevante para esta tarea.
-Antes de editar, identifica la especificacion, los limites arquitectonicos y la
-Definition of Done. Implementa, verifica y actualiza la documentacion afectada.
-```
-
-## Skills incluidos
-
-- `implement-feature`: implementar comportamiento desde especificacion hasta verificacion.
-- `create-migration`: cambiar modelos y datos mediante migraciones seguras.
-- `review-code`: revisar bugs, seguridad, regresiones, arquitectura y pruebas.
-- `update-documentation`: mantener fuentes de verdad y referencias sincronizadas.
-- `implement-operational-frontend`: construir interfaces operativas consistentes y sin sobrecarga visual.
-- `commit-changes`: dividir el trabajo en commits pequenos con mensajes descriptivos.
-- `optimize-performance`: medir antes de optimizar y revertir lo que no supera su baseline.
-- `harden-security`: asegurar fronteras, autorizacion, secretos y archivos.
-
-Los skills viven en `.agents/skills/` y se cargan solo cuando la tarea los necesita.
-
-## Criterio frontend
-
-El contexto incluye reglas concretas para evitar que paneles administrativos y
-aplicaciones operativas terminen como una acumulacion de cards, formularios, filtros y
-mensajes.
-
-- [Arquitectura frontend](docs/architecture/frontend.md)
-- [Arquitectura cognitiva](docs/architecture/cognitive-architecture.md)
-- [Fundamentos de diseno](docs/architecture/design-foundations.md)
-- [Sistema de componentes](docs/architecture/component-system.md)
-- [Diseno de interfaces operativas](docs/architecture/interface-design.md)
-- [Data tables](docs/architecture/data-tables.md)
-- [Formularios y workflows](docs/architecture/forms-and-workflows.md)
-- [Feedback y estados](docs/architecture/feedback-and-states.md)
-- [Navegacion y responsive](docs/architecture/navigation-responsive.md)
-- [Checklist frontend](docs/quality/frontend-checklist.md)
-
-Principios esenciales:
+La parte mas desarrollada del contexto evita que un panel operativo termine como una
+acumulacion de cards, filtros y mensajes. Disenar es decidir que no aparece:
 
 - responder por escrito quien usa la pantalla, que decide, con que informacion y cual es su
   unica accion primaria, antes de implementarla;
 - disenar desde el trabajo del usuario, nunca desde el esquema de base de datos;
 - no mostrar un dato solo porque el backend lo devuelve;
-- clasificar la informacion en P0, P1, P2 y P3, y dejar fuera de la vista inicial lo tecnico;
+- clasificar la informacion en P0, P1, P2 y P3, y dejar lo tecnico fuera de la vista inicial;
 - limitar las acciones simultaneas: una primaria, una o dos secundarias, el resto revelado;
 - tomar espaciado, tipografia, color, radios y motion de escalas documentadas;
-- usar lenguaje de negocio y ocultar IDs o detalles internos;
-- mantener tablas, filtros, acciones y paginacion uniformes;
-- usar modales para CRUD breve y paginas completas para workflows complejos;
-- comunicar acciones con feedback semantico sin llenar la pagina de banners;
-- limitar la navegacion visible a dos niveles;
-- separar submodulos en el sidebar en lugar de pestanas dentro de una pagina;
-- confirmar escribiendo el nombre lo irreversible y en un solo paso lo reversible;
-- reutilizar componentes antes de crear variantes por modulo;
-- verificar desktop, mobile, teclado, light mode y dark mode;
-- eliminar contenido redundante que no ayude a decidir o actuar.
+- cubrir todos los estados: carga, vacio, parcial, error, permiso y exito;
+- verificar teclado, movil, light y dark antes de dar algo por terminado.
 
 ## Mapa del repositorio
 
@@ -190,45 +121,3 @@ Principios esenciales:
     ├── security/                   # Principios, hardening y amenazas
     └── generated/                  # Referencias derivadas
 ```
-
-## Fuentes de verdad
-
-- [Guia para agentes](AGENTS.md)
-- [Mapa de arquitectura](ARCHITECTURE.md)
-- [Indice de documentacion](docs/README.md)
-- [Indice de arquitectura](docs/architecture/index.md)
-- [Definition of Done](docs/quality/definition-of-done.md)
-- [Control de versiones](docs/quality/version-control.md)
-- [Principios de seguridad](docs/security/principles.md)
-- [Hardening de seguridad](docs/security/hardening.md)
-- [Rendimiento](docs/quality/performance.md)
-
-## Que no incluye
-
-- Codigo de una aplicacion concreta.
-- Requerimientos de un dominio o cliente.
-- Dependencias instaladas o build output.
-- Secretos, credenciales o variables de entorno reales.
-- Una arquitectura inmutable que deba aplicarse sin evaluar contexto.
-
-El repositorio contiene solamente contexto Markdown reutilizable. Cada aplicacion debe
-completar sus especificaciones de producto y mantenerlas junto al codigo.
-
-## Reglas que no deben romperse
-
-- `AGENTS.md` es un mapa corto, no una enciclopedia.
-- `docs/` conserva el conocimiento durable del proyecto.
-- Las instrucciones cercanas al codigo tienen prioridad sobre las globales.
-- Los secretos permanecen fuera del repositorio y del frontend.
-- Los cambios de base de datos usan migraciones.
-- Cada unidad coherente se confirma en su propio commit, no la sesion completa.
-- Se mide antes de optimizar, y lo que no supera su baseline se revierte.
-- La autorizacion se verifica en el servidor por registro, no solo en la navegacion.
-- Las reglas criticas se convierten en tests, linters o automatizacion.
-- Un cambio no esta terminado sin implementacion, verificacion y documentacion coherentes.
-- Los errores repetidos del agente deben transformarse en contexto o controles ejecutables.
-
----
-
-Construido para que el siguiente agente no tenga que adivinar las decisiones que el
-equipo ya tomo.
