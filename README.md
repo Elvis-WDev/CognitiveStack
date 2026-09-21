@@ -32,6 +32,8 @@ verificables dentro del propio proyecto.
 | Autenticacion | Better Auth y reglas para no reinventar sesiones               |
 | Frontend      | shadcn/ui, Tailwind, formularios, tablas y estados compartidos |
 | UX operativa  | Jerarquia visual, baja fatiga, responsive y accesibilidad      |
+| Diseno visual | Tokens, escalas de espaciado, tipografia, color y motion       |
+| Criterio UX   | Brief de pantalla, niveles de informacion y presupuesto de acciones |
 | Calidad       | Definition of Done, testing, code review y observabilidad      |
 | Rendimiento   | Presupuestos, medicion y anti-patrones                         |
 | Seguridad     | Principios, hardening por frontera y threat model              |
@@ -140,6 +142,8 @@ aplicaciones operativas terminen como una acumulacion de cards, formularios, fil
 mensajes.
 
 - [Arquitectura frontend](docs/architecture/frontend.md)
+- [Arquitectura cognitiva](docs/architecture/cognitive-architecture.md)
+- [Fundamentos de diseno](docs/architecture/design-foundations.md)
 - [Sistema de componentes](docs/architecture/component-system.md)
 - [Diseno de interfaces operativas](docs/architecture/interface-design.md)
 - [Data tables](docs/architecture/data-tables.md)
@@ -150,6 +154,13 @@ mensajes.
 
 Principios esenciales:
 
+- responder por escrito quien usa la pantalla, que decide, con que informacion y cual es su
+  unica accion primaria, antes de implementarla;
+- disenar desde el trabajo del usuario, nunca desde el esquema de base de datos;
+- no mostrar un dato solo porque el backend lo devuelve;
+- clasificar la informacion en P0, P1, P2 y P3, y dejar fuera de la vista inicial lo tecnico;
+- limitar las acciones simultaneas: una primaria, una o dos secundarias, el resto revelado;
+- tomar espaciado, tipografia, color, radios y motion de escalas documentadas;
 - usar lenguaje de negocio y ocultar IDs o detalles internos;
 - mantener tablas, filtros, acciones y paginacion uniformes;
 - usar modales para CRUD breve y paginas completas para workflows complejos;
