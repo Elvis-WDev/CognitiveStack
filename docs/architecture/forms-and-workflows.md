@@ -26,6 +26,11 @@ exercise silently.
 
 ## Form Construction
 
+Ask for what the task needs, not for what the model stores. A property existing on the
+entity is not a reason to render a field: derive it, default it, or leave it to the screen
+that owns it. Every question the form asks is work the user has to do, and every optional
+field is a decision they have to make about whether to answer it.
+
 - Use React Hook Form for state and Zod for validation.
 - Reuse server-compatible schemas where practical, but translate messages into user language.
 - Use persistent labels; placeholders are examples, not labels.
@@ -140,6 +145,18 @@ record. A good structure is:
 
 Do not hide essential context in nested dialogs. Do not consume a permanent right rail
 for generic instructions that could be concise helper text.
+
+## Settings And Configuration
+
+Configuration is not one long form. Group it by the user's intention, one destination per
+group, for example `General`, `Permisos`, `Notificaciones`, `Integraciones`, `Seguridad`,
+and `Avanzado`.
+
+- Keep advanced or irreversible settings in their own group instead of mixing them into everyday ones.
+- Apply progressive disclosure inside a group: show the setting, and reveal its details once it is enabled.
+- Use a wizard with review and summary when configuration must be assembled in order or validated before it takes effect.
+- Show the effect where the setting is made: a preview, the resulting value, or the records it will affect.
+- State whether a change applies immediately or on save, and keep that rule consistent across groups.
 
 ## Import And Background Work
 
