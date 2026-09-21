@@ -22,10 +22,17 @@ person scan, compare, decide, and act; it should not advertise its own implement
 Do not treat every dataset as a dashboard, every section as a card, or every action as
 a permanent panel. Choose the smallest surface that supports the workflow.
 
+Design from the user, never from the schema. A table, a field, an endpoint, or an existing
+feature does not decide what belongs on screen; the user's job does. Answer the screen brief
+in `cognitive-architecture.md` before implementing. It is a precondition, not a formality: a
+screen whose user, decision, required information, and primary action are unknown is not
+ready to build.
+
 ## Required Pattern Documents
 
 Open only the documents relevant to the task:
 
+- User, decision, information tiers, and action budget: `cognitive-architecture.md`.
 - Screen hierarchy and visual workload: `interface-design.md`.
 - Shared component inventory and contracts: `component-system.md`.
 - Lists, filters, columns, actions, and pagination: `data-tables.md`.
