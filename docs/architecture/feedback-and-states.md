@@ -6,6 +6,11 @@ Every user action receives timely, semantic, human-readable feedback. The messag
 say what happened and what the user can do next, without raw exceptions, metadata,
 transport errors, or framework terminology.
 
+Timely means the interface reacts within about 100ms, even when the result takes longer.
+Every interactive control also carries its own visible states: default, hover,
+focus-visible, active, disabled, and loading. See `design-foundations.md` for the state
+matrix, durations, and easing.
+
 ## Choose The Feedback Surface
 
 | State                                                          | Preferred surface                          |
@@ -68,6 +73,10 @@ feedback path is an incomplete implementation, not a minor omission.
 
 ## Loading
 
+Acknowledge the interaction immediately, then show the shape of the wait: a skeleton when
+content will replace the surface, a pending state in the control when the surface stays,
+real progress when it can be measured.
+
 - Keep geometry stable.
 - Use skeletons for page sections and tables.
 - Use a shared spinner for compact indeterminate actions.
@@ -86,6 +95,15 @@ feedback path is an incomplete implementation, not a minor omission.
 
 ## Errors
 
+An error answers three questions: what failed, what was preserved, and what the user can do
+next.
+
+```text
+No pudimos guardar los cambios.
+Tus datos siguen en el formulario.
+[Intentar nuevamente]
+```
+
 - Preserve form input after recoverable failures.
 - Distinguish validation, permission, conflict, unavailable service, and unexpected errors.
 - Show field errors beside fields and operation errors at the operation surface.
@@ -93,7 +111,26 @@ feedback path is an incomplete implementation, not a minor omission.
 - Never render stack traces, SQL errors, raw provider payloads, storage paths, or secret values.
 - Log diagnostic detail server-side with correlation context.
 
+## Optimistic Updates
+
+Update the interface before the server answers only when the action is reversible and
+almost always succeeds: toggling a flag, reordering a list, marking as read.
+
+- Keep the previous state so a failure restores it exactly.
+- On failure, revert and explain. Never leave an optimistic value on screen.
+- Do not apply optimistic updates to payments, approvals, deletions, or anything whose reversal is not trivial.
+- An optimistic update is still a mutation: it goes through the shared feedback helper and invalidates the data it changed.
+
 ## Empty And Partial States
+
+An empty state answers three questions: what this means, why it is empty, and what the user
+can do now. `No hay datos.` answers none of them.
+
+```text
+Todavia no has creado proyectos.
+Crea el primero para empezar a organizar el trabajo del equipo.
+[Crear proyecto]
+```
 
 An empty state should distinguish:
 
