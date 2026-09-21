@@ -73,6 +73,17 @@ the existing component contract before use. Do not accumulate near-duplicate pri
 - Keep a component focused on one job. A file that keeps growing is decomposed before more is added to it.
 - Do not pass a prop through more than about three layers that do not use it. Restructure or use context instead.
 
+## Scope Of A UI Change
+
+An interface change is bounded by the interface. A redesign does not silently modify
+business logic, permissions, API contracts, database schema, security rules, or domain
+behavior. When a screen needs something the backend does not provide, document the gap in
+the feature specification or the active plan and implement it as its own change.
+
+- Never ship a control that does nothing. An unsupported action is a documented requirement, not a button.
+- Never replace missing data with a permanent mock. A fixture belongs in a test, not in a screen.
+- Never drop working functionality because the new layout has no room for it. Find the place, or raise it as a decision.
+
 ## Technical Information Boundary
 
 The frontend may carry internal IDs in values and requests, but should present labels,
@@ -85,10 +96,13 @@ and visually distinct from normal product workflows.
 
 ## Verification Baseline
 
-Before completion, exercise the screen with:
+Before completion, exercise the screen with real conditions, not the demo dataset that made
+the screenshot look good:
 
+- zero, one, a handful, and several hundred records;
 - realistic, empty, loading, partial, failure, and unauthorized data;
-- long labels, long names, and the smallest supported viewport;
+- missing optional values, long labels and names, large numbers, other locales, and other time zones;
+- the smallest supported viewport;
 - keyboard-only navigation and visible focus;
 - light and dark themes;
 - repeated submit clicks, slow requests, and stale responses;
