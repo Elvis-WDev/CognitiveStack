@@ -5,6 +5,11 @@
 Use one shared table contract for operational collections. Users should not have to
 relearn search, filters, columns, pagination, or actions in each module.
 
+A table is the right surface when the user must compare, sort, filter, search, or analyze
+several records. Data arriving in rows is not a reason to render a table: one record's
+attributes belong in a detail surface, and a handful of unrelated values belong in the
+layout that fits them.
+
 ## Standard Anatomy
 
 1. Compact title/description only when not already supplied by the page.
@@ -49,10 +54,15 @@ Do not copy table markup per module. Add configuration or a reusable extension p
 - Provide `Limpiar filtros` only when at least one filter is active.
 - Show active advanced filters as removable labels when they are otherwise hidden.
 - Validate structured filters such as dates, references, or ranges before querying.
+- Restore filters, sorting, page, scroll position, and selection when the user returns from a record. See `cognitive-architecture.md`.
 
 Avoid a separate oversized filter card above the table.
 
 ## Columns
+
+Show the columns the primary decision needs, usually five to seven. Every extra column
+costs scanning speed on every row the user reads. Keep the rest in the column menu or in
+the detail surface, and let a saved preference remember what an individual user chose.
 
 - Put the primary identity first.
 - Combine closely related secondary information in one cell when it improves scanning.
@@ -82,8 +92,8 @@ Let the user recognize a value without reading every cell.
 - Edit, inspect, download, retry, activate, deactivate, archive, or delete only when valid for the row state and current permission.
 - Disable with an explanation when the action is visible but temporarily unavailable.
 - Confirm destructive or irreversible actions.
-- Open detail from the row instead of keeping a permanent side panel beside the table.
-- Avoid generic overflow menus when two or three visible icons are faster and unambiguous.
+- Open detail from the row itself instead of spending an icon on it or keeping a permanent side panel beside the table.
+- Budget the row: at most three visible icon actions, each frequent and valid for most rows. Everything else goes in a `...` menu. Two or three unambiguous icons are faster than a menu; seven are a wall.
 
 ## Pagination
 
@@ -127,6 +137,8 @@ Reject the implementation when:
 - filters sit in a detached decorative section;
 - row actions lack tooltips or feedback;
 - the table exposes internal identifiers;
+- the default columns exceed what the primary decision needs;
+- a row carries more than three visible actions;
 - a state is communicated only by color;
 - changing pages loses intentional selection;
 - loading causes layout jumps;
