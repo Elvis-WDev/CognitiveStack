@@ -12,6 +12,8 @@ Read:
 - `AGENTS.md` and the nearest scoped instructions.
 - Relevant product feature and acceptance criteria.
 - `docs/architecture/frontend.md`.
+- `docs/architecture/cognitive-architecture.md`.
+- `docs/architecture/design-foundations.md`.
 - Pattern docs required by the task:
   - `docs/architecture/component-system.md`.
   - `docs/architecture/interface-design.md`.
@@ -23,16 +25,17 @@ Read:
 
 ## Workflow
 
-1. Inspect the existing screen, shared components, API contract, permissions, and neighboring modules.
-2. State the primary user task and choose the smallest suitable surface: table, modal, detail, dashboard, or full-page workflow.
-3. Remove duplicated headings, summaries, cards, helper text, technical fields, and persistent feedback that do not help the task.
-4. Reuse shared primitives before adding components. Extend the shared contract when behavior belongs across modules.
-5. Implement every relevant state: loading, empty, filtered-empty, partial, pending, success, validation, permission, conflict, and unexpected failure.
-6. Keep internal identifiers in values only. Render business labels and backend-generated references.
-7. Verify permissions in UI and rely on backend enforcement as the authority.
-8. Exercise keyboard, touch, responsive layouts, long content, light/dark themes, repeated actions, slow requests, and stale responses.
-9. Run project verification, complete the frontend checklist, and report every requested criterion as met or as a declared exception with its reason.
-10. Update architecture or feature docs when the workflow or shared component contract changes.
+1. Inspect the existing screen, shared components, tokens, API contract, permissions, and neighboring modules.
+2. Answer the screen brief in writing: user, goal, primary decision, minimum information, single primary action. Do not implement without it.
+3. Tier the information P0-P3, choose the smallest suitable surface, and report diagnosis, solution architecture, technical implementation, and verification before coding.
+4. Remove duplicated headings, summaries, cards, helper text, technical fields, and persistent feedback that do not help the task.
+5. Reuse shared primitives before adding components. Extend the shared contract when behavior belongs across modules.
+6. Implement every relevant state: loading, empty, filtered-empty, partial, pending, success, validation, permission, conflict, and unexpected failure, plus the interactive states of each control.
+7. Keep internal identifiers in values only. Render business labels and backend-generated references.
+8. Verify permissions in UI and rely on backend enforcement as the authority.
+9. Exercise keyboard, touch, responsive layouts, real data volumes, long content, light/dark themes, reduced motion, repeated actions, slow requests, and stale responses.
+10. Run project verification, complete the frontend checklist including the screen audit, and report every requested criterion as met or as a declared exception with its reason.
+11. Update architecture or feature docs when the workflow or shared component contract changes.
 
 ## Component Decisions
 
@@ -52,6 +55,11 @@ Read:
 
 ## Guardrails
 
+- Do not implement a screen whose brief is unanswered.
+- Do not derive a screen from the schema, and do not display a value only because the backend returns it.
+- Do not ship more than one primary action, or a wall of simultaneous secondary actions.
+- Do not introduce spacing, color, radius, z-index, or duration values outside the documented scales.
+- Do not ship a control without backend support, or a screen that runs on mocked data.
 - Do not expose raw IDs, auth/framework names, provider internals, storage paths, secrets, or backend metadata without a documented operational need.
 - Do not create a third navigation level.
 - Do not split a module into tabbed pages.

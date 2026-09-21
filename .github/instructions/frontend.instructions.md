@@ -3,6 +3,9 @@
 Apply to frontend files.
 
 - Build actual product screens, not marketing placeholders.
+- Answer the screen brief before implementing: user, goal, primary decision, minimum information, single primary action.
+- Design from the user's job, never from the database schema, and never show a value only because the backend returns it.
+- Keep one primary action per screen and take visual values from the documented spacing, type, color, and motion scales.
 - Prefer existing design-system components.
 - Keep forms validated and accessible.
 - Avoid loading excessive data into the DOM; use pagination or virtualization for large collections.

@@ -32,6 +32,12 @@ Who uses this feature?
 
 ## Interface Decisions
 
+- Who uses the screen, how often, and on which device:
+- User job in one sentence:
+- Primary decision:
+- Minimum information required for that decision:
+- Single primary action:
+- Information tiers P0/P1/P2/P3:
 - Primary user task:
 - Primary screen surface: table, focused form, dashboard, detail, or full-page workflow.
 - Information that must be visible for a decision:

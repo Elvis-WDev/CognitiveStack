@@ -23,6 +23,8 @@
 - Stack baseline: `docs/architecture/stack.md`
 - Authentication: `docs/architecture/authentication.md`
 - Frontend architecture: `docs/architecture/frontend.md`
+- Cognitive architecture: `docs/architecture/cognitive-architecture.md`
+- Design foundations: `docs/architecture/design-foundations.md`
 - Interface design: `docs/architecture/interface-design.md`
 - Active plans: `docs/plans/active/`
 - Definition of done: `docs/quality/definition-of-done.md`
@@ -73,6 +75,9 @@ Use pnpm through Corepack. Replace placeholders only when the project exposes di
 - Commit one coherent unit at a time; never batch a whole working session into one commit.
 - Write commit subjects as `type(scope): imperative subject` under 72 characters, and keep bodies to three short lines at most.
 - Commit and push only when asked, and never rewrite published history without an explicit request.
+- Answer the screen brief before implementing an interface: user, goal, primary decision, minimum information, and single primary action.
+- Do not design a screen from the database schema, and do not display a value only because the backend returns it.
+- Keep one primary action per screen, and take spacing, type, color, radius, and motion values from the documented scales.
 - Do not expose internal IDs, provider names, storage paths, auth implementation details, or other technical references in product UI when a business-facing label or automatic backend value is possible.
 - Reuse the documented table, form, dialog, feedback, navigation, and responsive patterns instead of inventing a different interaction model per module.
 - Optimize operational screens for scanning and repeated work. Remove redundant summaries, duplicated headings, explanatory boxes, and nested cards that do not help the user decide or act.
