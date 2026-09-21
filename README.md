@@ -9,117 +9,117 @@ agentic systems.
 
 `agent-skills` · `prompt-engineering` · `system-architecture` · `llm` · `workflows`
 
-## Que es
+## What It Is
 
-CognitiveStack es un sistema de conocimiento en Markdown que un proyecto instala junto a su
-codigo para que los agentes de IA sepan como trabajar antes de modificar nada.
+CognitiveStack is a Markdown knowledge system that a project installs next to its code, so
+AI agents know how to work before they change anything.
 
-No es un starter de codigo ni una libreria. Es la capa de contexto: especificaciones de
-ingenieria, limites arquitectonicos, criterios de interfaz, reglas de calidad y seguridad, y
-skills reutilizables, escritos para que Codex, Claude, GitHub Copilot u otro agente lean lo
-mismo y lleguen a las mismas decisiones.
+It is not a code starter and not a library. It is the context layer: engineering
+specifications, architectural boundaries, interface criteria, quality and security rules,
+and reusable skills, written so that Codex, Claude, GitHub Copilot, or any other agent read
+the same thing and reach the same decisions.
 
-## Por que existe
+## Why It Exists
 
-Un agente genera codigo rapidamente, pero sin contexto persistente suele:
+An agent writes code quickly, but without persistent context it tends to:
 
-- inventar patrones distintos en cada modulo;
-- mezclar reglas de negocio con infraestructura;
-- duplicar componentes y documentacion;
-- construir interfaces desde el esquema de base de datos;
-- exponer detalles tecnicos en pantalla;
-- omitir estados, permisos, pruebas o migraciones;
-- depender de conversaciones que el siguiente agente no conoce.
+- invent a different pattern in every module;
+- mix business rules with infrastructure;
+- duplicate components and documentation;
+- build interfaces straight from the database schema;
+- expose technical detail on screen;
+- skip states, permissions, tests, or migrations;
+- rely on conversations the next agent never saw.
 
-CognitiveStack convierte esas decisiones en instrucciones versionadas, navegables y
-verificables dentro del propio repositorio.
+CognitiveStack turns those decisions into versioned, navigable, verifiable instructions
+inside the repository itself.
 
-## Que contiene
+## What It Contains
 
-| Area           | Contexto incluido                                                     |
-| -------------- | --------------------------------------------------------------------- |
-| Agentes        | Instrucciones para Codex, Claude y GitHub Copilot                     |
-| Arquitectura   | Express.js, Next.js, limites por capas e integraciones                |
-| Datos          | PostgreSQL, Prisma y migraciones versionadas                          |
-| Autenticacion  | Better Auth y reglas para no reinventar sesiones                      |
-| Frontend       | shadcn/ui, Tailwind, formularios, tablas y estados compartidos        |
-| Criterio UX    | Brief de pantalla, niveles de informacion y presupuesto de acciones   |
-| Diseno visual  | Tokens, escalas de espaciado, tipografia, color y motion              |
-| Calidad        | Definition of Done, testing, code review y observabilidad             |
-| Rendimiento    | Presupuestos, medicion y anti-patrones                                |
-| Seguridad      | Principios, hardening por frontera y threat model                     |
-| Ejecucion      | Planes activos, decisiones y skills reutilizables                     |
-| Entrega        | Commits pequenos, mensajes descriptivos y pull requests               |
+| Area           | Context included                                             |
+| -------------- | ------------------------------------------------------------ |
+| Agents         | Instructions for Codex, Claude, and GitHub Copilot           |
+| Architecture   | Express.js, Next.js, layer boundaries, and integrations      |
+| Data           | PostgreSQL, Prisma, and versioned migrations                 |
+| Authentication | Better Auth, and rules against reinventing sessions          |
+| Frontend       | shadcn/ui, Tailwind, shared forms, tables, and states        |
+| UX criteria    | Screen brief, information tiers, and action budgets          |
+| Visual design  | Tokens and scales for spacing, type, color, and motion       |
+| Quality        | Definition of Done, testing, code review, and observability  |
+| Performance    | Budgets, measurement, and anti-patterns                      |
+| Security       | Principles, hardening per boundary, and threat model         |
+| Execution      | Active plans, decisions, and reusable skills                 |
+| Delivery       | Small commits, descriptive messages, and pull requests       |
 
 ### Skills
 
-Procedimientos que se cargan solo cuando la tarea los necesita, en `.agents/skills/`:
+Procedures loaded only when a task needs them, in `.agents/skills/`:
 
 `implement-feature` · `implement-operational-frontend` · `create-migration` · `review-code`
 · `harden-security` · `optimize-performance` · `update-documentation` · `commit-changes`
 
-## Stack de referencia
+## Reference Stack
 
-Node.js y TypeScript, Express.js para la API REST, Next.js y React en el frontend, Better
-Auth para identidad y sesiones, PostgreSQL con Prisma, Tailwind CSS y shadcn/ui, React Hook
-Form con Zod, Axios para integraciones server-side, pnpm mediante Corepack y Docker para
-desplegar.
+Node.js and TypeScript, Express.js for the REST API, Next.js and React on the frontend,
+Better Auth for identity and sessions, PostgreSQL with Prisma, Tailwind CSS and shadcn/ui,
+React Hook Form with Zod, Axios for server-side integrations, pnpm through Corepack, and
+Docker for deployment.
 
-El stack es una decision base, no una restriccion irreversible. Un proyecto que necesita
-desviarse registra la razon y sus consecuencias en un ADR.
+The stack is a default decision, not an irreversible constraint. A project that needs to
+deviate records the reason and its consequences in an ADR.
 
-## Como funciona el contexto
+## How The Context Works
 
 ```text
 AGENTS.md
-  -> indica que leer y como trabajar
+  -> states what to read and how to work
 ARCHITECTURE.md
-  -> muestra componentes, limites y dependencias
+  -> shows components, boundaries, and dependencies
 docs/product/
-  -> explica que debe hacer el producto
+  -> explains what the product must do
 docs/architecture/
-  -> explica como debe construirse
+  -> explains how it must be built
 docs/plans/
-  -> conserva la estrategia de trabajos complejos
+  -> keeps the strategy behind complex work
 .agents/skills/
-  -> ejecuta procedimientos repetibles
+  -> runs repeatable procedures
 docs/quality/ + docs/security/
-  -> define cuando un cambio es aceptable
+  -> defines when a change is acceptable
 ```
 
-La idea no es cargar todo el repositorio en cada prompt. El agente empieza con un mapa
-pequeno y abre solamente la fuente de verdad relevante para la tarea.
+The point is not to load the whole repository into every prompt. An agent starts from a
+small map and opens only the source of truth the task requires.
 
-## Criterio de interfaz
+## Interface Criteria
 
-La parte mas desarrollada del contexto evita que un panel operativo termine como una
-acumulacion de cards, filtros y mensajes. Disenar es decidir que no aparece:
+The most developed part of the context keeps an operational panel from becoming a pile of
+cards, filters, and messages. Designing is deciding what does not appear:
 
-- responder por escrito quien usa la pantalla, que decide, con que informacion y cual es su
-  unica accion primaria, antes de implementarla;
-- disenar desde el trabajo del usuario, nunca desde el esquema de base de datos;
-- no mostrar un dato solo porque el backend lo devuelve;
-- clasificar la informacion en P0, P1, P2 y P3, y dejar lo tecnico fuera de la vista inicial;
-- limitar las acciones simultaneas: una primaria, una o dos secundarias, el resto revelado;
-- tomar espaciado, tipografia, color, radios y motion de escalas documentadas;
-- cubrir todos los estados: carga, vacio, parcial, error, permiso y exito;
-- verificar teclado, movil, light y dark antes de dar algo por terminado.
+- answer in writing who uses the screen, what they decide, with what information, and what
+  their single primary action is, before implementing it;
+- design from the user's job, never from the database schema;
+- never show a value only because the backend returns it;
+- tier information P0 to P3, and keep technical detail out of the initial view;
+- limit simultaneous actions: one primary, one or two secondary, the rest disclosed;
+- take spacing, type, color, radius, and motion values from documented scales;
+- cover every state: loading, empty, partial, error, permission, and success;
+- verify keyboard, mobile, light, and dark before calling anything done.
 
-## Mapa del repositorio
+## Repository Map
 
 ```text
 .
-├── AGENTS.md                       # Reglas permanentes para agentes
-├── ARCHITECTURE.md                 # Mapa tecnico de alto nivel
-├── CLAUDE.md                       # Entrada para Claude
-├── .agents/skills/                 # Procedimientos reutilizables
-├── .github/                        # Instrucciones para Copilot
-├── .codex/                         # Configuracion, no conocimiento del producto
+├── AGENTS.md                       # Permanent rules for agents
+├── ARCHITECTURE.md                 # High-level technical map
+├── CLAUDE.md                       # Entry point for Claude
+├── .agents/skills/                 # Reusable procedures
+├── .github/                        # Copilot instructions
+├── .codex/                         # Configuration, not product knowledge
 └── docs/
-    ├── product/                    # Producto, dominio y features
-    ├── architecture/               # Stack, boundaries y patrones
-    ├── plans/                      # Trabajo activo, completado y deuda
-    ├── quality/                    # Testing, review, commits, rendimiento y DoD
-    ├── security/                   # Principios, hardening y amenazas
-    └── generated/                  # Referencias derivadas
+    ├── product/                    # Product, domain, and features
+    ├── architecture/               # Stack, boundaries, and patterns
+    ├── plans/                      # Active work, completed work, and debt
+    ├── quality/                    # Testing, review, commits, performance, done
+    ├── security/                   # Principles, hardening, and threats
+    └── generated/                  # Derived references
 ```
