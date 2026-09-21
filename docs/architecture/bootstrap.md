@@ -4,14 +4,29 @@ Use this guide when starting a new application from this context.
 
 ## 1. Create The Repository
 
-Copy the context files first:
+Copy the context kit into the new project:
+
+```bash
+git clone --depth 1 https://github.com/Elvis-WDev/CognitiveStack.git context-template
+rsync -av --exclude='.git' context-template/ path/to/your-project/
+rm -rf context-template
+```
+
+The kit is:
 
 - `AGENTS.md`
 - `ARCHITECTURE.md`
+- `CLAUDE.md`
 - `.agents/skills/`
 - `docs/`
 - `.github/`
 - `.codex/README.md`
+
+Then adapt it before asking an agent for changes:
+
+- Replace `{{PROJECT_NAME}}` in `AGENTS.md`.
+- Replace the verification commands in `AGENTS.md` when the project exposes different script names.
+- Adapt every document to the architecture the project actually has, not the one it may get later.
 
 Then initialize the application code using the selected stack.
 
