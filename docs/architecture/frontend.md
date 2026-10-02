@@ -81,6 +81,8 @@ business logic, permissions, API contracts, database schema, security rules, or 
 behavior. When a screen needs something the backend does not provide, document the gap in
 the feature specification or the active plan and implement it as its own change.
 
+- Within that boundary, improve freely: interaction patterns, layout, hierarchy, feedback, component choice, state representation, and discoverability.
+- Never invent pricing, permissions, business rules, backend behavior, required fields, or workflows that change the product logic.
 - Never ship a control that does nothing. An unsupported action is a documented requirement, not a button.
 - Never replace missing data with a permanent mock. A fixture belongs in a test, not in a screen.
 - Never drop working functionality because the new layout has no room for it. Find the place, or raise it as a decision.
