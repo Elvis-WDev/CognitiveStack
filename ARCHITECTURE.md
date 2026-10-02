@@ -41,6 +41,7 @@ Rules:
 Document the major boundaries:
 
 - Authentication boundary.
+- Tenant boundary: every private record belongs to exactly one tenant, resolved from the session.
 - HTTP/API boundary.
 - Database boundary.
 - External-service boundary.

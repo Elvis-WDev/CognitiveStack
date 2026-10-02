@@ -60,13 +60,15 @@ Responsibilities:
 - Pagination: return page metadata with large collections.
 - Auth: protect custom routes with middleware backed by Better Auth sessions.
 - Validation: validate request params, query, body, environment variables, and external payloads.
+- Idempotency: mutations whose repetition would duplicate an effect accept an `Idempotency-Key` header. See `idempotency.md`.
+- Status codes: `404` for any record outside the caller's tenant, `409` for state conflicts and in-flight duplicates, `422` for an idempotency key reused with a different payload.
 
 ## Auth Boundary
 
 - Better Auth owns `/api/auth/*` or the equivalent auth route prefix.
 - Register Better Auth before JSON middleware when the framework requires raw request access.
 - Application routes must not manually hash passwords.
-- Application use cases should receive authenticated user identity as plain data, not framework objects.
+- Application use cases receive the authenticated user, tenant, and role as plain data resolved from the session, never from the request payload and never as framework objects.
 
 ## Database Boundary
 
@@ -74,6 +76,7 @@ Responsibilities:
 - Repositories map Prisma records into domain/application objects.
 - Use migrations for schema changes.
 - Do not use ad hoc SQL in application code unless documented and isolated.
+- Repositories for tenant-owned data take the tenant context as a required parameter and scope every query with it, including updates and deletes. No unscoped lookup by ID exists for private records. See `../security/access-control.md`.
 
 ## External Service Boundary
 
@@ -91,3 +94,66 @@ Responsibilities:
 - Progress reporting:
 
 Use persisted jobs for long-running work that must continue after browser refresh.
+
+Jobs may run more than once. Give each a deduplication key and make its handler idempotent;
+see `idempotency.md`.
+
+## Sensitive Operations
+
+A sensitive operation reads or changes private data, money, inventory, permissions, files,
+or anything another account must not see. Before writing one, answer these in the feature
+specification or the active plan:
+
+1. Who may execute this action?
+2. Which tenant does the caller belong to?
+3. Which tenant does the resource belong to?
+4. How is ownership validated?
+5. Can changing an ID in the request reach another account's data?
+6. What happens if the request arrives twice?
+7. What happens if two requests arrive at once?
+8. Does the operation need idempotency, and by which mechanism?
+9. Which database constraints protect its invariants?
+10. Does it need an audit record?
+11. Which authorization tests must be added?
+12. Is there any path for data to leak between accounts?
+
+An unanswered question blocks implementation, as the screen brief does for interfaces.
+
+### Pipeline
+
+Process a sensitive operation in this order. Each step depends on the ones before it.
+
+```text
+authentication
+  -> user context
+  -> tenant context
+  -> authorization
+  -> ownership validation
+  -> input validation
+  -> idempotency claim, when required
+  -> transaction or atomic operation
+  -> persistence
+  -> audit record
+  -> sanitized response
+```
+
+Authentication and context resolution live in HTTP middleware. Authorization, ownership,
+idempotency, and the transaction live in the use case and its tenant-aware repository. Parse
+only the identifiers that ownership needs before authorizing, and validate the rest of the
+payload afterwards, so an unauthorized caller learns nothing from validation errors.
+
+### Reporting Format
+
+When implementing a sensitive operation, report in this order:
+
+1. The relevant risks.
+2. The authorization boundaries.
+3. Whether it needs idempotency, and by which mechanism.
+4. The implementation.
+5. The validations added.
+6. The database constraints added.
+7. The tests added.
+8. Security risks found in existing code, even outside the task.
+
+Never weaken an authorization control to make a test pass, and never trade data isolation for
+simpler code.
