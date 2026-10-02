@@ -58,6 +58,12 @@ Apply `../security/hardening.md`. Confirm input is validated at boundaries, quer
 parameterized, authorization is enforced server-side per record, secrets stay out of code
 and logs, output is encoded, and data from external sources is treated as untrusted.
 
+Hunt the patterns listed in `../security/access-control.md`: lookups by a client-supplied ID
+without a tenant scope, identity read from the payload, payloads passed to the ORM, and
+permissions enforced only in the interface. Then ask what happens when each request arrives
+twice or concurrently: critical `POST` operations, webhooks, and balance or inventory changes
+must be idempotent and transactional. See `../architecture/idempotency.md`.
+
 ### Performance
 
 Apply `performance.md`. Look for N+1 patterns, unbounded queries, list endpoints without
@@ -161,5 +167,7 @@ visual fatigue as real product defects rather than cosmetic preferences.
 - feature logic was added to a shared module;
 - a bespoke helper duplicates an existing canonical one;
 - a silent fallback hides an unclear invariant;
+- a private record is reachable through a client-supplied ID without a tenant scope;
+- a critical mutation can run twice with no idempotency key, natural key, or guarded update;
 - dependencies were bumped in bulk with no changelog review or lockfile diff;
 - it is too large to review properly. Ask for the split instead of skimming.

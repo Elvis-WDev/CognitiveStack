@@ -25,6 +25,12 @@ For backend work:
 - Better Auth owns auth behavior.
 - Prisma migrations exist for schema changes.
 - PostgreSQL behavior is considered for production.
+- Sensitive operations answer the brief in `docs/architecture/backend.md`.
+- Identity, tenant, and role come from the session, and every private query is scoped by tenant and ownership.
+- Writes accept only allowlisted fields.
+- Mutations with meaningful side effects are idempotent, and critical invariants are database constraints.
+- Webhooks are verified and deduplicated by event ID.
+- Access control and idempotency tests exist, with at least two tenants in the fixtures.
 
 For frontend work:
 
