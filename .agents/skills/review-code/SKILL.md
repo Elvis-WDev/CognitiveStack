@@ -12,6 +12,8 @@ Read:
 - `AGENTS.md`
 - `docs/quality/code-review.md`
 - `docs/security/hardening.md`
+- `docs/security/access-control.md`
+- `docs/architecture/idempotency.md`
 - `docs/quality/performance.md`
 - Relevant architecture docs.
 - Relevant feature specification and acceptance criteria.
@@ -30,6 +32,8 @@ Lead with findings. Prioritize:
 Stack-specific checks:
 
 - Auth uses Better Auth instead of custom password/session logic.
+- Identity, tenant, and role come from the session, and private queries are scoped by tenant and ownership.
+- Critical mutations are idempotent, webhooks are deduplicated, and money or inventory changes are transactional.
 - Database changes use Prisma migrations and PostgreSQL-compatible assumptions.
 - Package manager usage stays on pnpm/Corepack.
 - External HTTP calls are server-side, typed, and use Axios when tokens are involved.

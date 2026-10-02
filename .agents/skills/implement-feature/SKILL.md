@@ -22,7 +22,7 @@ Read:
 2. If the task is non-trivial, create or update a plan in `docs/plans/active/`.
 3. Update domain concepts first when business rules change.
 4. Add or update application ports/interfaces before infrastructure adapters.
-5. For backend work, use Express controllers/routes, Zod validation, Better Auth middleware, Prisma repositories, and typed Axios clients when needed.
+5. For backend work, use Express controllers/routes, Zod validation, Better Auth middleware, Prisma repositories, and typed Axios clients when needed. For sensitive operations, answer the brief in `docs/architecture/backend.md`, follow its pipeline, and report in its format.
 6. For frontend work, use Next.js, shadcn/ui, React Hook Form, Zod, typed API helpers, and clear loading/error states.
 7. Update generated references when contracts change.
 8. Update feature decisions or ADRs when architecture changes.
@@ -33,6 +33,7 @@ Read:
 
 - Keep domain code framework-free.
 - Do not pass HTTP request/response objects into use cases.
+- Do not read identity, tenant, or role from the request payload.
 - Keep response and error shapes consistent with architecture docs.
 - Do not expose secrets to the frontend or logs.
 - Do not implement custom auth when Better Auth covers the need.

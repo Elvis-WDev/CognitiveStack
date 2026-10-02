@@ -4,6 +4,8 @@
 - Given/when/then criterion 2.
 - Error and validation states are covered.
 - Auth and permission requirements are covered.
+- A user from another tenant cannot read, change, or detect the records this feature handles.
+- Repeating or racing a request never duplicates its effect.
 - Observability or audit requirements are covered when relevant.
 - User-facing fields use business language and do not require raw internal IDs.
 - The screen reuses the project's shared interaction patterns instead of creating module-specific variants.

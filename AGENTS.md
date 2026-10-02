@@ -31,6 +31,8 @@
 - Version control: `docs/quality/version-control.md`
 - Frontend review checklist: `docs/quality/frontend-checklist.md`
 - Security principles: `docs/security/principles.md`
+- Access control: `docs/security/access-control.md`
+- Idempotency and concurrency: `docs/architecture/idempotency.md`
 - Security hardening: `docs/security/hardening.md`
 - Performance: `docs/quality/performance.md`
 
@@ -69,6 +71,9 @@ Use pnpm through Corepack. Replace placeholders only when the project exposes di
 - Do not modify generated files manually.
 - Do not bypass validation at HTTP, environment, auth, database, or external-service boundaries.
 - Enforce authorization server-side for each record; a frontend permission gate is presentation only.
+- Derive identity, tenant, and role from the session; never trust user IDs, tenant IDs, or roles sent by the client.
+- Scope every query on private data by tenant and ownership; knowing an identifier is not authorization.
+- Make mutations whose repetition would duplicate an effect idempotent, and enforce critical invariants with database constraints.
 - Measure before optimizing, and revert any optimization that does not beat its baseline.
 - Do not mark work complete while verification is failing.
 - Keep secrets out of committed files.

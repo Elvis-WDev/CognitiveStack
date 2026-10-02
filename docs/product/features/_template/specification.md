@@ -30,6 +30,16 @@ Who uses this feature?
 
 - Routes, screens, commands, jobs, or integrations involved.
 
+## Access And Integrity
+
+- Who may execute each operation, and with which role:
+- Tenant that owns each resource, and how ownership is validated:
+- Identifiers the client sends, and how each one is verified:
+- Operations that must be idempotent, and by which mechanism:
+- Database constraints that protect the invariants:
+- Audit records required:
+- Cross-account leak paths considered:
+
 ## Interface Decisions
 
 - Who uses the screen, how often, and on which device:
