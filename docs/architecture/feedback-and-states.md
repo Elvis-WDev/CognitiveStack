@@ -60,6 +60,7 @@ remembering to add it.
 The shared helper owns:
 
 - the pending state of the initiating control and duplicate-submit prevention;
+- the idempotency key for mutations the API declares idempotent: one key per user intent, reused on retry, renewed when the payload changes;
 - the success toast and the data invalidation that follows it;
 - the mapping from known backend error codes to business messages;
 - the safe fallback message for unknown failures;
@@ -107,7 +108,7 @@ Tus datos siguen en el formulario.
 - Preserve form input after recoverable failures.
 - Distinguish validation, permission, conflict, unavailable service, and unexpected errors.
 - Show field errors beside fields and operation errors at the operation surface.
-- Keep retry safe through idempotency or backend lifecycle rules.
+- Keep retry safe through idempotency or backend lifecycle rules. A disabled button reduces duplicates; only the server prevents them. See `idempotency.md`.
 - Never render stack traces, SQL errors, raw provider payloads, storage paths, or secret values.
 - Log diagnostic detail server-side with correlation context.
 
