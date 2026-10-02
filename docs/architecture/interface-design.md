@@ -158,6 +158,18 @@ then results, then trend, then analysis, then the records behind them.
 - Do not duplicate the same aggregate in a KPI, chart, and summary list.
 - Empty dashboards should explain setup or next action, not fabricate demo data.
 
+Choose each visualization from the question it answers, never from how impressive it looks.
+
+| Question                                   | Visualization                                   |
+| ------------------------------------------ | ----------------------------------------------- |
+| How does it change over time?              | Line chart                                      |
+| How do these items compare?                | Bar chart                                       |
+| How far along is it?                       | Progress indicator                              |
+| What is the one number that matters?       | Metric with its period and comparison           |
+| How are the values distributed?            | Histogram                                       |
+| What makes up the whole?                   | Stacked bar; a pie only with very few parts     |
+| What state is it in?                       | Status badge                                    |
+
 ## Business Language
 
 Show what the user recognizes:
