@@ -39,6 +39,8 @@ For frontend work:
 - Nothing is displayed only because the backend returns it.
 - Visual values come from the documented scales; no arbitrary spacing, color, radius, or duration.
 - Interactive elements cover their states, and every animation explains a change.
+- Controls are chosen from the user's intent rather than the data type, and add no complexity the task does not need.
+- Every state looks as deliberate as the happy path.
 - No control ships without backend support, and no screen ships on mocked data.
 - Loading, empty, success, and error states are handled.
 - Forms use validation.
