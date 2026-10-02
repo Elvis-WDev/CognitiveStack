@@ -1,7 +1,8 @@
 # Security Hardening
 
 `principles.md` states why. `threat-model.md` states what is defended against. This document
-states which controls to implement at each boundary.
+states which controls to implement at each boundary. `access-control.md` specifies
+object-level authorization and tenant isolation in depth.
 
 ## Untrusted Input
 
@@ -12,6 +13,7 @@ job payloads, imported files, and configuration.
 - Validate shape, type, range, and length at the boundary, before the value reaches business logic.
 - Validate environment variables at startup and refuse to start when a required one is missing or malformed.
 - Reject unknown fields when the contract is closed, instead of ignoring them.
+- Allowlist the fields a client may write, so privileged fields such as role, tenant, or balance cannot ride along. See `access-control.md`.
 - Normalize and re-validate values that were stored earlier by an untrusted source.
 - Return a business message on failure and keep the diagnostic detail in logs.
 
@@ -34,6 +36,7 @@ job payloads, imported files, and configuration.
 
 - Enforce authorization server-side on every protected route. The frontend gate is presentation only.
 - Check ownership, not only identity: confirm this user may act on this specific record.
+- Derive user, tenant, and role from the session, never from the request. See `access-control.md`.
 - Deny by default; a route without an explicit rule is closed.
 - Rate limit authentication, password reset, and expensive or enumerable endpoints.
 - Keep session cookies HTTP-only, Secure, and same-site.
