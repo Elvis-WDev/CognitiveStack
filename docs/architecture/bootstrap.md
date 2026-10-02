@@ -18,6 +18,8 @@ The kit is:
 - `ARCHITECTURE.md`
 - `CLAUDE.md`
 - `.agents/skills/`
+- `.claude/`
+- `openspec/`
 - `docs/`
 - `.github/`
 - `.codex/README.md`
@@ -39,7 +41,24 @@ corepack enable
 corepack pnpm install
 ```
 
-## 3. Backend Baseline
+## 3. OpenSpec
+
+The kit ships OpenSpec already initialized for Codex, Claude Code, and GitHub Copilot, with
+`openspec/config.yaml` bridging it to these documents. Each developer prepares their machine
+once:
+
+```bash
+corepack pnpm add --global @fission-ai/openspec
+openspec config set profile custom
+openspec config set workflows '["propose","explore","apply","update","sync","archive","verify"]'
+openspec update
+```
+
+`openspec update` regenerates the generated skills for the installed CLI version. To support
+another agent, add it with `openspec init --tools <id>`; existing files stay untouched. See
+`docs/quality/change-lifecycle.md` for the lifecycle.
+
+## 4. Backend Baseline
 
 Create a TypeScript Express API with:
 
@@ -51,7 +70,7 @@ Create a TypeScript Express API with:
 - Global error handler.
 - Typed external API clients using Axios when needed.
 
-## 4. Frontend Baseline
+## 5. Frontend Baseline
 
 Create a Next.js frontend with:
 
@@ -63,7 +82,7 @@ Create a Next.js frontend with:
 - Typed API helper.
 - Auth-aware app shell.
 
-## 5. Database Baseline
+## 6. Database Baseline
 
 Use PostgreSQL and Prisma migrations:
 
@@ -72,7 +91,7 @@ Use PostgreSQL and Prisma migrations:
 - Generate Prisma Client.
 - Document schema changes in `docs/generated/`.
 
-## 6. Auth Baseline
+## 7. Auth Baseline
 
 Use Better Auth:
 
@@ -81,7 +100,7 @@ Use Better Auth:
 - Protect API routes with auth middleware.
 - Keep registration disabled unless the product requires it.
 
-## 7. Deployment Baseline
+## 8. Deployment Baseline
 
 Prepare Docker files when code exists:
 
@@ -91,7 +110,7 @@ Prepare Docker files when code exists:
 - Health checks.
 - No database data deletion on redeploy.
 
-## 8. Documentation Baseline
+## 9. Documentation Baseline
 
 Before implementing features:
 
