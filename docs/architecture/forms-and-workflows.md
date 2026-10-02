@@ -31,9 +31,18 @@ entity is not a reason to render a field: derive it, default it, or leave it to 
 that owns it. Every question the form asks is work the user has to do, and every optional
 field is a decision they have to make about whether to answer it.
 
+A form is not a vertical stack of generic inputs. Before building one, ask:
+
+- Can a field use a control that fits the intent better? See `component-selection.md`.
+- Can related fields be grouped, and unnecessary ones removed?
+- Can a default or an inferred value save the user effort?
+- Can advanced options stay hidden until they are needed?
+- Can a selection be shown visually, or its result previewed?
+
 - Use React Hook Form for state and Zod for validation.
 - Reuse server-compatible schemas where practical, but translate messages into user language.
-- Use persistent labels; placeholders are examples, not labels.
+- Use persistent labels; placeholders are examples, not labels. `Nombre del proyecto` above `Sitio web de marketing`, never `Escribe algo...` alone.
+- Write validation messages that are specific and actionable: `La contrasena debe tener al menos 8 caracteres`, never `Dato invalido`.
 - Group fields by the user's mental model, not database tables.
 - Keep required/optional behavior explicit.
 - Validate format while typing only when it helps; show routine errors after touch or blur to avoid visual noise.
@@ -43,6 +52,26 @@ field is a decision they have to make about whether to answer it.
 
 Positive per-field messages should be reserved for sensitive or error-prone input. A
 screen full of `Dato valido` text creates noise without improving confidence.
+
+## Defaults
+
+Use a default when it is safe and predictable, because every prefilled correct value is a
+decision the user does not have to make: the most common option, the current date, the
+recommended configuration, or a remembered preference.
+
+Never default to an option that is destructive, expensive, irreversible, or that makes data
+public. Those choices are made deliberately by the user.
+
+## Multi-Step Processes
+
+Use a stepper or wizard when the process has clearly separate stages, such as `Cuenta`,
+`Empresa`, `Facturacion`, and `Confirmacion`, and splitting it reduces what the user must
+hold in mind at once.
+
+- Show the current step, the total, and the name of each stage.
+- Let the user go back without losing what they entered.
+- Validate each step before moving on, and review everything before the final submission.
+- Do not split a short form into steps; a three-field form in three screens is friction, not structure.
 
 ## Rules The Server Enforces
 
