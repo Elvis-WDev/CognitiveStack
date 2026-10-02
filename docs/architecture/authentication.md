@@ -16,7 +16,7 @@ Better Auth owns:
 
 ## Application Rules
 
-- Public registration is disabled unless the product specification requires it.
+- Public registration is disabled unless the product's specs require it.
 - Protected REST routes must use an auth middleware.
 - The middleware resolves user, tenant, and role from the session. Handlers never read them from the request. See `../security/access-control.md`.
 - The frontend should call backend auth endpoints rather than handling credentials manually.

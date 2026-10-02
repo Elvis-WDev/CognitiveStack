@@ -21,8 +21,8 @@ Move to a full page only when the dialog would genuinely fail the task, such as 
 - the screen is not a row of any table, such as a profile or an application-wide setting;
 - the workflow needs draft, validation, and submission as separate stages.
 
-An exception is a decision to declare in the feature specification, not a preference to
-exercise silently.
+An exception is a decision to declare in the design of the OpenSpec change, not a preference
+to exercise silently.
 
 ## Form Construction
 

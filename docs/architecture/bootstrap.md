@@ -96,7 +96,7 @@ Prepare Docker files when code exists:
 Before implementing features:
 
 - Complete `docs/product/overview.md`.
-- Create feature specs under `docs/product/features/`.
+- Capture behavior in `openspec/specs/` through the first OpenSpec changes.
 - Update `ARCHITECTURE.md` for project-specific boundaries.
 - Create ADRs for deviations from this stack.
 

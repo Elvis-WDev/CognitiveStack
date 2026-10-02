@@ -15,7 +15,8 @@ Default architecture:
 
 - `backend/` or `src/`: Express API, application use cases, infrastructure adapters, auth, jobs, persistence.
 - `frontend/`: Next.js app, UI components, forms, charts, client-side state.
-- `docs/product/`: product specifications and domain knowledge.
+- `docs/product/`: product purpose, users, domain, and vocabulary.
+- `openspec/`: current behavior specs and changes in progress.
 - `docs/architecture/`: technical decisions and boundaries.
 - `docs/plans/`: active and completed implementation plans.
 

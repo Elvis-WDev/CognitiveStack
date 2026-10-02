@@ -101,8 +101,8 @@ see `idempotency.md`.
 ## Sensitive Operations
 
 A sensitive operation reads or changes private data, money, inventory, permissions, files,
-or anything another account must not see. Before writing one, answer these in the feature
-specification or the active plan:
+or anything another account must not see. Before writing one, answer these in the design of
+its OpenSpec change:
 
 1. Who may execute this action?
 2. Which tenant does the caller belong to?

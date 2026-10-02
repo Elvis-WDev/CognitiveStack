@@ -31,6 +31,7 @@ Describe the product in one or two paragraphs.
 
 - Domain model: `docs/product/domain-model.md`
 - Glossary: `docs/product/glossary.md`
-- Features: `docs/product/features/`
+- Current behavior: `openspec/specs/`
+- Changes in progress: `openspec/changes/`
 - Architecture: `ARCHITECTURE.md`
 

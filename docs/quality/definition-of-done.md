@@ -2,8 +2,8 @@
 
 A change is done only when:
 
-- The implementation matches the relevant product specification.
-- Acceptance criteria are satisfied or explicitly updated.
+- The implementation matches the specs of its OpenSpec change.
+- Every scenario in those specs is satisfied, or the specs were explicitly updated.
 - Verification commands pass.
 - API, database, architecture, security, or user workflow docs are updated when behavior changes.
 - New dependencies are justified, and upgrades were reviewed one package at a time with the lockfile diff.

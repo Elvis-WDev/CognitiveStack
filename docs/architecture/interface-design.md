@@ -45,7 +45,7 @@ actions, or permission is a destination and belongs in the sidebar, not behind a
 
 Prefer the pattern the user already knows. Reinventing an interaction is justified only by a
 functional problem the established pattern cannot solve, and that reason belongs in the
-feature specification.
+design of the OpenSpec change.
 
 | Need                                 | Established pattern       |
 | ------------------------------------ | ------------------------- |

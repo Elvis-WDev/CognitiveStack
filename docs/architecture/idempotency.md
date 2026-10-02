@@ -22,8 +22,8 @@ them would duplicate an effect:
 - executing jobs;
 - creating any resource from an action the user might repeat.
 
-The feature specification declares, for each mutation, whether it is idempotent and by which
-mechanism.
+The design of each OpenSpec change declares, for each mutation, whether it is idempotent and
+by which mechanism.
 
 ## Prefer Natural Idempotency
 

@@ -79,7 +79,7 @@ the existing component contract before use. Do not accumulate near-duplicate pri
 An interface change is bounded by the interface. A redesign does not silently modify
 business logic, permissions, API contracts, database schema, security rules, or domain
 behavior. When a screen needs something the backend does not provide, document the gap in
-the feature specification or the active plan and implement it as its own change.
+the OpenSpec change and implement it as its own change.
 
 - Within that boundary, improve freely: interaction patterns, layout, hierarchy, feedback, component choice, state representation, and discoverability.
 - Never invent pricing, permissions, business rules, backend behavior, required fields, or workflows that change the product logic.

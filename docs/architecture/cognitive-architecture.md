@@ -39,8 +39,8 @@ primary task needs.
 
 ## The Screen Brief
 
-Before implementing or redesigning a screen, answer five questions in writing, in the
-feature specification or in the active plan:
+Before implementing or redesigning a screen, answer five questions in writing, in the design
+of its OpenSpec change:
 
 1. Who uses this screen?
 2. What are they trying to accomplish here?
@@ -110,7 +110,7 @@ Rules:
 - An initial view assembled from P3 content is a defect, not a power-user feature.
 - Tier belongs to the task, not to the field. The same timestamp is P1 on an incident screen and P3 on a catalog screen.
 - P0 and P2 must not carry the same visual weight. `design-foundations.md` supplies the scales that express the difference.
-- Record the tiering in the feature specification when the screen is non-trivial.
+- Record the tiering in the change's design when the screen is non-trivial.
 
 ## Progressive Disclosure
 

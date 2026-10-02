@@ -74,7 +74,7 @@ before implementation starts.
 - [ ] Failed submission preserves user input and focuses useful recovery context.
 - [ ] Modal focus, Escape, close, overlay, scroll, and mobile behavior work.
 - [ ] A complex or high-risk workflow uses a full page when a modal would be cramped.
-- [ ] Create and edit use a modal, or the specification records why the full page was needed.
+- [ ] Create and edit use a modal, or the change's design records why the full page was needed.
 - [ ] Irreversible deletion requires typed confirmation; reversible actions take one step.
 - [ ] File upload, replacement, rename, and removal work with per-file state.
 
