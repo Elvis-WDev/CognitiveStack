@@ -55,8 +55,19 @@ Do not copy table markup per module. Add configuration or a reusable extension p
 - Show active advanced filters as removable labels when they are otherwise hidden.
 - Validate structured filters such as dates, references, or ranges before querying.
 - Restore filters, sorting, page, scroll position, and selection when the user returns from a record. See `cognitive-architecture.md`.
+- Use filter chips for short sets of values users toggle often, instead of a multi-select dropdown.
+- On mobile, move filters into a drawer or bottom sheet with an apply action, and show the count of active filters on its trigger.
 
-Avoid a separate oversized filter card above the table.
+Avoid a separate oversized filter card above the table, and never a row of ten dropdowns.
+
+## Search
+
+- Show a search input with a search icon, and a clear button once it holds a value.
+- Debounce server-backed search, and show its loading state inside the table, not over the page.
+- When nothing matches, say so and offer the next step: clear the search, remove a filter, or create the record.
+- Highlight the matched text when it helps the user confirm the result.
+- Offer recent searches or suggested queries only where users repeat the same lookups.
+- When the application has many destinations and records, add a command palette to jump directly to a record or an action.
 
 ## Columns
 
