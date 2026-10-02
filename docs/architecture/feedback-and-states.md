@@ -46,6 +46,7 @@ Requirements:
 - responsive width with wrapping text;
 - concise title and optional one-sentence detail;
 - optional retry/action when safe;
+- an undo action for reversible changes, with enough time to use it and no dismissal while it has focus;
 - deduplication for repeated identical events.
 
 Map known backend error codes to business messages. Unknown errors receive a safe generic

@@ -210,7 +210,7 @@ Match the friction to how hard the action is to undo:
 
 | Action                                                 | Confirmation                                         |
 | ------------------------------------------------------ | ---------------------------------------------------- |
-| Reversible change such as hide, archive, or deactivate | Single explicit step, no typing                      |
+| Reversible change such as hide, archive, or deactivate | One step, then undo from the toast                   |
 | Irreversible deletion or permanent data loss           | Two steps: intent, then typing the exact record name |
 | Irreversible bulk action                               | Two steps plus the number of affected records        |
 
@@ -221,3 +221,5 @@ Rules:
 - Ask for the label the user already sees in the list, never an internal identifier.
 - Style the confirming action as destructive and never give it initial focus.
 - Do not spend a second step on actions the user can undo; reserve the cost for real loss.
+- Prefer undo to confirmation. An action that can be undone from the toast needs no dialog before it, and every unnecessary dialog trains users to click through the ones that matter.
+- Offer undo only when the backend can actually revert the change.
