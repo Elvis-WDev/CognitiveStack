@@ -80,9 +80,9 @@ changes mid-flight, and **sync** merges delta specs into the main specs without 
 | Specialist | `implement-operational-frontend`, `create-migration`, `harden-security`, `optimize-performance`, `review-code`, `update-documentation`, `commit-changes` | The disciplines |
 
 An OpenSpec task says what to build. The specialist skill says how. A requirement such as
-"the user SHALL choose between 1 and 10 seats" becomes, in `design.md`, a small bounded
-integer adjusted by one, which `component-selection.md` maps to a stepper, which
-`component-system.md` already provides as `IntegerStepperField`. The task then runs
+"the user SHALL choose between 1 and 10 seats" becomes, in the change's design, a small bounded
+integer adjusted by one, which `../architecture/component-selection.md` maps to a stepper,
+which `../architecture/component-system.md` already provides as `IntegerStepperField`. The task then runs
 through `implement-operational-frontend` and the frontend checklist.
 
 ## Writing Specs
