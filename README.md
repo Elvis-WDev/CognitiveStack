@@ -41,13 +41,14 @@ inside the repository itself.
 | Agents         | Instructions for Codex, Claude, and GitHub Copilot           |
 | Architecture   | Express.js, Next.js, layer boundaries, and integrations      |
 | Data           | PostgreSQL, Prisma, and versioned migrations                 |
+| Integrity      | Idempotency, concurrency, constraints, and webhooks          |
 | Authentication | Better Auth, and rules against reinventing sessions          |
 | Frontend       | shadcn/ui, Tailwind, shared forms, tables, and states        |
 | UX criteria    | Screen brief, information tiers, and action budgets          |
 | Visual design  | Tokens and scales for spacing, type, color, and motion       |
 | Quality        | Definition of Done, testing, code review, and observability  |
 | Performance    | Budgets, measurement, and anti-patterns                      |
-| Security       | Principles, hardening per boundary, and threat model         |
+| Security       | Object-level access, tenant isolation, and hardening         |
 | Execution      | Active plans, decisions, and reusable skills                 |
 | Delivery       | Small commits, descriptive messages, and pull requests       |
 
@@ -90,10 +91,24 @@ docs/quality/ + docs/security/
 The point is not to load the whole repository into every prompt. An agent starts from a
 small map and opens only the source of truth the task requires.
 
+## Backend Criteria
+
+The backend rules assume the frontend is fully controlled by an attacker. Knowing an
+identifier is never authorization, and a request that arrives twice must not act twice:
+
+- derive identity, tenant, and role from the session, never from the request;
+- scope every private query by tenant and ownership, including updates, deletes, and referenced IDs;
+- accept only allowlisted fields on every write;
+- answer `404` for anything outside the caller's tenant;
+- make side effects idempotent, with keys scoped by tenant, user, and operation and claimed atomically;
+- enforce critical invariants with database constraints, guarded updates, and transactions;
+- verify and deduplicate webhooks, and treat every job as at-least-once;
+- test cross-tenant access, ID tampering, mass assignment, replays, and races with two tenants or more.
+
 ## Interface Criteria
 
-The most developed part of the context keeps an operational panel from becoming a pile of
-cards, filters, and messages. Designing is deciding what does not appear:
+The interface rules keep an operational panel from becoming a pile of cards, filters, and
+messages. Designing is deciding what does not appear:
 
 - answer in writing who uses the screen, what they decide, with what information, and what
   their single primary action is, before implementing it;
