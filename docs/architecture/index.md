@@ -18,9 +18,10 @@
    - `docs/architecture/navigation-responsive.md`
 9. `docs/architecture/authentication.md`
 10. `docs/architecture/database.md`
-11. `docs/architecture/integrations.md`
-12. `docs/architecture/deployment.md`
-13. `docs/architecture/adr/`
+11. `docs/architecture/idempotency.md`
+12. `docs/architecture/integrations.md`
+13. `docs/architecture/deployment.md`
+14. `docs/architecture/adr/`
 
 ## Architecture Rules
 

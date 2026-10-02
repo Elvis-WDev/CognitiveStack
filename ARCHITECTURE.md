@@ -64,6 +64,7 @@ Document the major boundaries:
 - Navigation and responsive behavior: `docs/architecture/navigation-responsive.md`
 - Authentication: `docs/architecture/authentication.md`
 - Database: `docs/architecture/database.md`
+- Idempotency and concurrency: `docs/architecture/idempotency.md`
 - Integrations: `docs/architecture/integrations.md`
 - Deployment: `docs/architecture/deployment.md`
 - ADRs: `docs/architecture/adr/`
