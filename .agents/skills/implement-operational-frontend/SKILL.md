@@ -10,7 +10,7 @@ description: Build or refactor operational Next.js interfaces such as dashboards
 Read:
 
 - `AGENTS.md` and the nearest scoped instructions.
-- Relevant product feature and acceptance criteria.
+- The OpenSpec change being implemented: its specs, design, and tasks.
 - `docs/architecture/frontend.md`.
 - `docs/architecture/cognitive-architecture.md`.
 - `docs/architecture/design-foundations.md`.

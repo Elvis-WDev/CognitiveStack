@@ -12,7 +12,7 @@ Read:
 - `docs/quality/performance.md`
 - Relevant architecture document for the layer being measured.
 - `docs/architecture/database.md` for query and index work.
-- The project's performance ledger or active plan, to avoid repeating a failed attempt.
+- The project's performance ledger or the OpenSpec change's design, to avoid repeating a failed attempt.
 
 ## Workflow
 

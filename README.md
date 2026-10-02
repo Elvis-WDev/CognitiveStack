@@ -56,8 +56,8 @@ inside the repository itself.
 
 Procedures loaded only when a task needs them, in `.agents/skills/`:
 
-`implement-feature` · `implement-operational-frontend` · `create-migration` · `review-code`
-· `harden-security` · `optimize-performance` · `update-documentation` · `commit-changes`
+`implement-operational-frontend` · `create-migration` · `review-code` · `harden-security`
+· `optimize-performance` · `update-documentation` · `commit-changes`
 
 ## Reference Stack
 

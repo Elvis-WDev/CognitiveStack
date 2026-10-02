@@ -11,7 +11,7 @@ Read the document closest to the changed behavior:
 
 - Product: `docs/product/`
 - Architecture: `docs/architecture/`
-- Plans: `docs/plans/`
+- Current behavior: `openspec/specs/`, updated only by archiving or syncing an OpenSpec change, never edited directly
 - Quality: `docs/quality/`
 - Security: `docs/security/`
 - Generated references: `docs/generated/`

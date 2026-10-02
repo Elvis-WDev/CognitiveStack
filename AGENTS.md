@@ -27,7 +27,9 @@
 - Design foundations: `docs/architecture/design-foundations.md`
 - Component selection: `docs/architecture/component-selection.md`
 - Interface design: `docs/architecture/interface-design.md`
-- Active plans: `docs/plans/active/`
+- Current behavior: `openspec/specs/`
+- Changes in progress: `openspec/changes/`
+- Change lifecycle: `docs/quality/change-lifecycle.md`
 - Definition of done: `docs/quality/definition-of-done.md`
 - Version control: `docs/quality/version-control.md`
 - Frontend review checklist: `docs/quality/frontend-checklist.md`
@@ -41,7 +43,7 @@
 
 1. Read this file and the nearest `AGENTS.md` for the files you will touch.
 2. Open only the relevant docs for the current task.
-3. For non-trivial work, create or update a plan in `docs/plans/active/`.
+3. For non-trivial behavior changes, work through an OpenSpec change: explore, propose, review, apply, verify, and archive. See `docs/quality/change-lifecycle.md`.
 4. Implement the smallest coherent change.
 5. Update documentation when behavior, architecture, API, data, or decisions change.
 6. Run the project's verification commands before calling work complete.
@@ -69,7 +71,8 @@ Use pnpm through Corepack. Replace placeholders only when the project exposes di
 - Use environment variables for configuration and validate them at startup.
 - Keep provider tokens and secrets server-side.
 - Do not introduce production dependencies without documenting why.
-- Do not modify generated files manually.
+- Do not modify generated files manually, including the OpenSpec skills, commands, and prompts; regenerate them with `openspec update`.
+- Describe current behavior only in `openspec/specs/`, and change it only through an OpenSpec change.
 - Do not bypass validation at HTTP, environment, auth, database, or external-service boundaries.
 - Enforce authorization server-side for each record; a frontend permission gate is presentation only.
 - Derive identity, tenant, and role from the session; never trust user IDs, tenant IDs, or roles sent by the client.
@@ -94,4 +97,4 @@ Use pnpm through Corepack. Replace placeholders only when the project exposes di
 
 ## Definition Of Done
 
-Implementation, verification, documentation, and acceptance criteria must agree.
+Implementation, verification, documentation, and the OpenSpec specs must agree.

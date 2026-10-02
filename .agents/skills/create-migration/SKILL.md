@@ -11,7 +11,7 @@ Read:
 
 - `docs/architecture/database.md`
 - `docs/architecture/stack.md`
-- Relevant feature spec.
+- The OpenSpec change's design.
 - `docs/security/principles.md`
 - Current migration policy for the project.
 

@@ -9,5 +9,6 @@ Project knowledge belongs in:
 - `AGENTS.md`
 - `ARCHITECTURE.md`
 - `docs/`
+- `openspec/`
 - `.agents/skills/`
 

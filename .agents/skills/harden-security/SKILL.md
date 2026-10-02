@@ -16,7 +16,7 @@ Read:
 - `docs/security/principles.md`
 - `docs/security/threat-model.md`
 - `docs/architecture/authentication.md` for auth work.
-- Relevant feature specification for the permissions the product requires.
+- The OpenSpec change being implemented, for the permissions the product requires.
 
 ## Workflow
 

@@ -16,7 +16,7 @@ Read:
 - `docs/architecture/idempotency.md`
 - `docs/quality/performance.md`
 - Relevant architecture docs.
-- Relevant feature specification and acceptance criteria.
+- The OpenSpec change under review: its proposal, specs, design, and tasks.
 - `docs/architecture/stack.md`
 
 ## Review Stance
