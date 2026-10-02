@@ -10,6 +10,7 @@
 6. `docs/architecture/cognitive-architecture.md`
 7. `docs/architecture/design-foundations.md`
 8. Frontend pattern required by the task:
+   - `docs/architecture/component-selection.md`
    - `docs/architecture/component-system.md`
    - `docs/architecture/interface-design.md`
    - `docs/architecture/data-tables.md`

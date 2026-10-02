@@ -57,6 +57,7 @@ Document the major boundaries:
 - Frontend: `docs/architecture/frontend.md`
 - Cognitive architecture: `docs/architecture/cognitive-architecture.md`
 - Design foundations: `docs/architecture/design-foundations.md`
+- Component selection: `docs/architecture/component-selection.md`
 - Shared component contracts: `docs/architecture/component-system.md`
 - Interface design: `docs/architecture/interface-design.md`
 - Data tables: `docs/architecture/data-tables.md`

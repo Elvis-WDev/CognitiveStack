@@ -140,7 +140,7 @@ objects. Use unframed sections or full-width bands for page structure. Keep radi
 - Use icon buttons for familiar compact commands such as edit, delete, refresh, close, download, and visibility.
 - Give every icon-only command an accessible name and opaque tooltip.
 - Use text or icon-plus-text for primary commands whose meaning is not universal.
-- Use switches or checkboxes for binary settings, segmented controls for modes, selects for bounded options, and steppers for integer quantities.
+- Choose each control from the user's intent, not from the data type: switches, segmented controls, selection cards, chips, sliders, steppers, and searchable comboboxes each fit a different task. See `component-selection.md`.
 - Keep primary actions solid and visually consistent across modules.
 - Destructive actions require clear wording, confirmation proportional to risk, and lifecycle-safe backend behavior.
 

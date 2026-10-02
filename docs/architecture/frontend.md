@@ -34,6 +34,7 @@ Open only the documents relevant to the task:
 
 - User, decision, information tiers, and action budget: `cognitive-architecture.md`.
 - Spacing, type, color, states, and motion scales: `design-foundations.md`.
+- Choosing the control that fits the user's intent: `component-selection.md`.
 - Screen hierarchy and visual workload: `interface-design.md`.
 - Shared component inventory and contracts: `component-system.md`.
 - Lists, filters, columns, actions, and pagination: `data-tables.md`.
