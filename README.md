@@ -116,6 +116,9 @@ messages. Designing is deciding what does not appear:
 - never show a value only because the backend returns it;
 - tier information P0 to P3, and keep technical detail out of the initial view;
 - limit simultaneous actions: one primary, one or two secondary, the rest disclosed;
+- choose each control from the user's intent, not the data type: steppers, sliders, segmented
+  controls, selection cards, chips, and searchable comboboxes each fit a different task;
+- avoid both under-designed forms of generic inputs and over-designed custom widgets;
 - take spacing, type, color, radius, and motion values from documented scales;
 - cover every state: loading, empty, partial, error, permission, and success;
 - verify keyboard, mobile, light, and dark before calling anything done.
