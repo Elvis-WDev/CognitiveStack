@@ -92,7 +92,8 @@ was load-bearing, is a regression.
 ## Attempt Ledger
 
 Reverted work leaves no trace in history, which is why the same dead idea gets retried.
-Record every attempt, kept and reverted alike, in the plan or a project performance log:
+Record every attempt, kept and reverted alike, in the OpenSpec change's design or a project
+performance log:
 
 | Attempt       | Baseline to result | Verdict  | Why                               |
 | ------------- | ------------------ | -------- | --------------------------------- |

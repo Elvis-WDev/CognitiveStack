@@ -142,7 +142,7 @@ Upgrading is a code change like any other, and bulk bumps are the riskiest:
 - Quantify when possible: name the added latency or the failing input rather than saying it could be slow.
 - Push back on an approach with clear problems and propose the alternative.
 - Comment on the code, not the author, and defer gracefully when the author has fuller context.
-- Do not accept "we will clean it up later". Require the cleanup now or a recorded item in `../plans/technical-debt.md`.
+- Do not accept "we will clean it up later". Require the cleanup now or a recorded item in `technical-debt.md`.
 
 ## Review Output
 

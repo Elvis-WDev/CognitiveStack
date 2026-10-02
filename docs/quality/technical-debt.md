@@ -9,6 +9,6 @@
 ## Rules
 
 - Debt must describe impact, not just discomfort.
-- Debt discovered during implementation should be linked to the relevant plan.
-- Critical debt should become an active plan.
+- Debt discovered during implementation is linked to the OpenSpec change that found it.
+- Critical debt becomes an OpenSpec change, with `skip_specs: true` when fixing it alters no behavior.
 

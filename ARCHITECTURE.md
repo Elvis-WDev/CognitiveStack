@@ -18,7 +18,6 @@ Default architecture:
 - `docs/product/`: product purpose, users, domain, and vocabulary.
 - `openspec/`: current behavior specs and changes in progress.
 - `docs/architecture/`: technical decisions and boundaries.
-- `docs/plans/`: active and completed implementation plans.
 
 ## Dependency Direction
 

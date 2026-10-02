@@ -49,7 +49,7 @@ inside the repository itself.
 | Quality        | Definition of Done, testing, code review, and observability  |
 | Performance    | Budgets, measurement, and anti-patterns                      |
 | Security       | Object-level access, tenant isolation, and hardening         |
-| Execution      | Active plans, decisions, and reusable skills                 |
+| Execution      | OpenSpec changes, decisions, and reusable skills             |
 | Delivery       | Small commits, descriptive messages, and pull requests       |
 
 ### Skills
@@ -80,8 +80,8 @@ docs/product/
   -> explains what the product must do
 docs/architecture/
   -> explains how it must be built
-docs/plans/
-  -> keeps the strategy behind complex work
+openspec/
+  -> specifies current behavior and the changes in progress
 .agents/skills/
   -> runs repeatable procedures
 docs/quality/ + docs/security/
@@ -136,8 +136,7 @@ messages. Designing is deciding what does not appear:
 └── docs/
     ├── product/                    # Product, domain, and features
     ├── architecture/               # Stack, boundaries, and patterns
-    ├── plans/                      # Active work, completed work, and debt
-    ├── quality/                    # Testing, review, commits, performance, done
+    ├── quality/                    # Change lifecycle, testing, review, commits, debt, done
     ├── security/                   # Principles, hardening, and threats
     └── generated/                  # Derived references
 ```

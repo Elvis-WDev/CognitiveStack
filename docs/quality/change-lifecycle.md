@@ -21,7 +21,7 @@ Neither duplicates the other.
 | Security                                     | `docs/security/`                            |
 | Quality and Definition of Done               | `docs/quality/`                             |
 | Architecture decisions                       | `docs/architecture/adr/`                    |
-| Known debt                                   | `docs/plans/technical-debt.md`              |
+| Known debt                                   | `docs/quality/technical-debt.md`            |
 | Agent procedures                             | `.agents/skills/`                           |
 
 Each kind of knowledge lives in one place:
