@@ -84,6 +84,7 @@ Do not duplicate the same module title immediately below the header.
 - Prevent background scroll while open.
 - Restore focus to the menu button on close.
 - Keep navigation labels readable without horizontal scrolling.
+- Use a bottom navigation bar only when the product has three to five top-level destinations and mobile is the primary device. Otherwise use the drawer.
 
 ## Responsive Layout
 
@@ -114,6 +115,14 @@ Transform instead of compressing:
 - Do not scale type continuously with viewport width.
 - Do not allow controls, text, or overlays to cover adjacent content.
 - Test at 320px, 768px, 1024px, and 1440px, plus 200% zoom and browser text enlargement.
+
+## Touch And Mobile Input
+
+- Never rely on hover alone. Anything revealed on hover is also reachable by tap and by keyboard.
+- Keep the primary action within thumb reach on mobile, as a sticky action when the task depends on it.
+- Open selectors and filters in a bottom sheet on mobile, and long searchable lists in a full-screen selector.
+- Set `inputMode` and `type` so the right keyboard appears: `numeric` for whole numbers, `decimal` for amounts, and `email`, `tel`, `url`, or `search` where they apply.
+- Set `autoComplete` tokens such as `name`, `email`, `current-password`, `new-password`, and `one-time-code`, so browsers and password managers can fill the field.
 
 ## Dark And Light Themes
 
