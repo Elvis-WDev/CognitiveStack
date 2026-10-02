@@ -50,6 +50,12 @@ primitives -> system components -> domain components -> features -> pages
 | `PasswordField`         | Masked sensitive input with accessible visibility toggle                   |
 | `FileField`             | Upload, replace, rename, and remove managed files with per-file state      |
 | `IntegerStepperField`   | Bounded whole-number input with increment/decrement controls               |
+| `SegmentedControl`      | Two to five visible, mutually exclusive options with stable geometry       |
+| `SelectionCardGroup`    | Radio-card choice among options with meaningful differences                |
+| `ChipGroup`             | Toggleable tags, categories, and filter values                             |
+| `SliderField`           | Approximate value or range, with the selection always visible as text      |
+| `ComboboxField`         | Searchable single or multiple selection with keyboard navigation           |
+| `DateRangePickerField`  | Range selection with business presets and a custom range                   |
 | `AsyncButton`           | Stable loading and duplicate-submit prevention                             |
 | `useMutationFeedback`   | Mutation wrapper owning pending state, feedback, and cache invalidation    |
 | `SemanticToaster`       | Shared success, error, warning, information, and loading feedback          |
@@ -62,7 +68,9 @@ primitives -> system components -> domain components -> features -> pages
 | `PermissionGate`        | Presentation guard only; backend remains authoritative                     |
 
 Names in this table are illustrative. Reuse an equivalent existing component rather than
-renaming a mature codebase only to match this document.
+renaming a mature codebase only to match this document. Which control fits which task is
+decided in `component-selection.md`; this inventory only guarantees there is one
+implementation of each.
 
 ## Contract Rules
 
