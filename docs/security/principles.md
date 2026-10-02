@@ -1,5 +1,9 @@
 # Security Principles
 
+- Design the backend as if the frontend were fully controlled by an attacker.
+- Knowing an identifier is never authorization. Scope every private query by tenant and ownership.
+- Derive identity, tenant, and role from the session, never from the request.
+- Make every critical side effect idempotent, and enforce critical invariants in the database.
 - Secrets are never committed.
 - Provider tokens stay server-side.
 - Validate input at every boundary.
