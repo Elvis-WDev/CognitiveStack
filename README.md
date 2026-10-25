@@ -112,6 +112,71 @@ into `openspec/specs/`.
 The point is not to load the whole repository into every prompt. An agent starts from a
 small map and opens only the source of truth the task requires.
 
+## Working With OpenSpec
+
+OpenSpec ships already initialized for Codex, Claude Code, and GitHub Copilot. It replaces
+the earlier `docs/plans/` folder and the feature templates in `docs/product/features/`:
+current behavior now lives in `openspec/specs/`, and each change in progress lives in
+`openspec/changes/<change>/` with its proposal, delta specs, design, and tasks.
+
+### Each Knowledge In One Place
+
+```text
+docs/product/        why the product exists
+openspec/specs/      what the system does
+docs/architecture/   how the system is structured
+code                 how it is implemented
+```
+
+### When To Open A Change
+
+Open an OpenSpec change for non-trivial work that alters observable behavior: a new
+capability, a changed or removed requirement, a new screen or workflow, or a new API
+contract. Typo fixes, refactors, dependency upgrades, formatting, and documentation-only
+edits do not need one.
+
+### Commands
+
+| Workflow | Claude Code     | GitHub Copilot  | Codex                      |
+| -------- | --------------- | --------------- | -------------------------- |
+| Explore  | `/opsx:explore` | `/opsx-explore` | `$openspec-explore`        |
+| Propose  | `/opsx:propose` | `/opsx-propose` | `$openspec-propose`        |
+| Update   | `/opsx:update`  | `/opsx-update`  | `$openspec-update-change`  |
+| Apply    | `/opsx:apply`   | `/opsx-apply`   | `$openspec-apply-change`   |
+| Verify   | `/opsx:verify`  | `/opsx-verify`  | `$openspec-verify-change`  |
+| Sync     | `/opsx:sync`    | `/opsx-sync`    | `$openspec-sync-specs`     |
+| Archive  | `/opsx:archive` | `/opsx-archive` | `$openspec-archive-change` |
+
+A person reviews the proposal, specs, design, and tasks before any code exists. Each task
+then runs through its specialist skill, and a change is archived only when implementation,
+specs, tests, and documentation agree.
+
+### Machine Setup
+
+Each developer installs the CLI and enables the full workflow profile once:
+
+```bash
+corepack pnpm add --global @fission-ai/openspec
+openspec config set profile custom
+openspec config set workflows '["propose","explore","apply","update","sync","archive","verify"]'
+openspec update
+```
+
+The `verify` workflow is outside OpenSpec's default profile; without the custom profile,
+`openspec update` removes the verify skills from the repository.
+
+### Generated And Authored Files
+
+- Generated, never edited by hand: the `openspec-*` skills in `.agents/skills/`,
+  `.claude/skills/`, and `.github/skills/`, the commands in `.claude/commands/opsx/`, and the
+  prompts in `.github/prompts/`. Regenerate them with `openspec update` after upgrading the CLI.
+- Authored: `openspec/config.yaml`, the bridge that injects CognitiveStack's rules into every
+  OpenSpec run, and the specs and changes themselves.
+
+The full lifecycle, spec-writing rules, and commit order are in
+`docs/quality/change-lifecycle.md`; adding OpenSpec to a new project is in
+`docs/architecture/bootstrap.md`.
+
 ## Backend Criteria
 
 The backend rules assume the frontend is fully controlled by an attacker. Knowing an
