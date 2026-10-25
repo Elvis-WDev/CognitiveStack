@@ -8,6 +8,7 @@ Use this directory as the project knowledge base.
 - `architecture/`: how the system is built and constrained.
 - `quality/`: change lifecycle, testing, review, version control, performance, observability, technical debt, and done criteria.
 - `security/`: security principles, access control, hardening controls, and threat model.
+- `video/`: storytelling, isometric style, typography, motion, and production for problem videos.
 - `generated/`: generated or derived references.
 
 ## Maintenance Rule
@@ -17,3 +18,6 @@ When code changes behavior, update the relevant document in the same pull reques
 For frontend work, answer the screen brief in `architecture/cognitive-architecture.md`
 first, then start with `architecture/frontend.md`, open only the relevant interface-pattern
 documents, and finish with `quality/frontend-checklist.md`.
+
+For video work, answer the video brief in `video/index.md` first, follow its read order,
+and finish with `quality/video-checklist.md`.

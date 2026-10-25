@@ -38,6 +38,8 @@
 - Idempotency and concurrency: `docs/architecture/idempotency.md`
 - Security hardening: `docs/security/hardening.md`
 - Performance: `docs/quality/performance.md`
+- Video production: `docs/video/index.md`
+- Video review checklist: `docs/quality/video-checklist.md`
 
 ## Workflow
 
@@ -94,6 +96,9 @@ Use pnpm through Corepack. Replace placeholders only when the project exposes di
 - Separate a module's areas as sidebar submodules, not as tabs inside one page.
 - Route every mutation through the shared feedback helper; no action ends without pending, success, or error feedback.
 - Confirm irreversible actions by typing the record name, and keep reversible ones to a single step.
+- Answer the video brief in `docs/video/index.md` before scripting or animating a video, and narrate one problem per video.
+- Draw videos in one true isometric projection with solid colors only: no gradients, glows, blurs, textures, outlines, or strokes.
+- Take video colors, type sizes, durations, and easings from the tokens in `docs/video/`, and keep every frame a pure function of time.
 
 ## Definition Of Done
 

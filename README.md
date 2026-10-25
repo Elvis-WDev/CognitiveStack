@@ -51,6 +51,7 @@ inside the repository itself.
 | Frontend       | shadcn/ui, Tailwind, shared forms, tables, and states        |
 | UX criteria    | Screen brief, information tiers, and action budgets          |
 | Visual design  | Tokens and scales for spacing, type, color, and motion       |
+| Video          | Problem storytelling, flat isometric style, and micro-motion |
 | Quality        | Definition of Done, testing, code review, and observability  |
 | Performance    | Budgets, measurement, and anti-patterns                      |
 | Security       | Object-level access, tenant isolation, and hardening         |
@@ -164,5 +165,6 @@ messages. Designing is deciding what does not appear:
     ├── architecture/               # Stack, boundaries, and patterns
     ├── quality/                    # Change lifecycle, testing, review, commits, debt, done
     ├── security/                   # Principles, hardening, and threats
+    ├── video/                      # Storytelling, isometric style, type, motion, production
     └── generated/                  # Derived references
 ```
