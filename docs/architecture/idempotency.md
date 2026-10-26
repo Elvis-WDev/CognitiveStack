@@ -1,26 +1,24 @@
 # Idempotency And Concurrency
 
-Users double-click, browsers retry, mobile clients reconnect, proxies resend, webhooks arrive
-twice, and jobs run more than once. An operation that is not idempotent will eventually run
-twice, and every critical non-idempotent operation is a duplicate effect waiting to happen.
+Operators double-click, press Enter twice, and retry after an error. Commands are re-entered
+from a shortcut while they still run. The application closes or the power fails in the
+middle of an operation. Two windows, two Windows users on a shared database, or a background
+job touch the same record at once. Remote services time out after they already succeeded.
+An operation that is not idempotent will eventually run twice.
 
-An idempotent operation produces its effect once, however many times the same request
+An idempotent operation produces its effect once, however many times the same intent
 arrives.
 
 ## Which Operations Need It
 
-`GET`, `PUT`, and `DELETE` are idempotent by HTTP definition, and the implementation must keep
-that promise. `POST` and `PATCH` are not; they need an explicit design whenever repeating
-them would duplicate an effect:
+Any use case whose repetition would duplicate an effect:
 
-- creating payments, charges, or refunds;
-- processing or confirming orders and purchases;
-- recording financial movements, granting credits, or consuming balance;
-- creating reservations or invoices;
-- sending webhooks, emails, or notifications;
-- processing callbacks and inbound webhooks;
-- executing jobs;
-- creating any resource from an action the user might repeat.
+- registering sales, payments, refunds, or cash movements;
+- issuing invoices or any document with a sequential number;
+- moving stock, granting credits, or consuming balance;
+- sending emails, printing fiscal documents, or calling remote APIs;
+- running pending operations and background jobs;
+- creating any record from an action the user might repeat.
 
 The design of each OpenSpec change declares, for each mutation, whether it is idempotent and
 by which mechanism.
@@ -29,173 +27,192 @@ by which mechanism.
 
 Before adding a key, check whether the operation can be idempotent by construction.
 
-| Mechanism                | Example                                                                                         |
-| ------------------------ | ----------------------------------------------------------------------------------------------- |
-| Set state, not deltas    | `PUT` the full desired value instead of incrementing it                                          |
-| Guarded state transition | `UPDATE orders SET status = 'paid' WHERE id = $1 AND tenant_id = $2 AND status = 'pending'`      |
-| Unique natural key       | `UNIQUE (tenant_id, external_payment_id)` turns a duplicate into a conflict, not a second row    |
-| Conditional arithmetic   | `UPDATE accounts SET balance = balance - $3 WHERE id = $1 AND tenant_id = $2 AND balance >= $3`  |
+| Mechanism                | Example                                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Set state, not deltas    | Save the full desired value instead of incrementing it                                                |
+| Guarded state transition | `UPDATE sales SET status = 'voided' WHERE id = @Id AND company_id = @CompanyId AND status = 'completed'` |
+| Unique natural key       | `UNIQUE (company_id, series, sequential_number)` turns a duplicate into a conflict, not a second row  |
+| Conditional arithmetic   | `UPDATE stock SET quantity = quantity - @Qty WHERE product_id = @Id AND company_id = @CompanyId AND quantity >= @Qty` |
 
 Check the affected row count of every guarded update. Zero means the precondition no longer
 held, and the operation must not report success.
 
+```csharp
+int affected = await connection.ExecuteAsync(VoidSaleSql, args, transaction);
+if (affected == 0)
+    return Result.Fail(Errors.Sales.NotVoidable); // already voided, missing, or other company
+```
+
 Natural mechanisms live in the database, so they survive restarts, concurrency, and every
-client. Use an idempotency key when the operation has no natural key, such as creating a new
-payment.
+code path.
 
 ## Idempotency Keys
 
-The client sends a key with the non-idempotent request:
+Use a key when the operation has no natural key, such as registering a new sale.
 
-```http
-POST /api/payments
-Idempotency-Key: 9f1c4b7e-2d1a-4c55-9a0e-7f3b2c1d8e60
-```
-
-The server stores the outcome under that key. When the same operation arrives again, it
-returns the stored outcome instead of executing again.
+- The ViewModel generates the key with `Guid.NewGuid()` when the user intent starts: when a
+  new sale or form begins, not when the command fires.
+- Repeated clicks, automatic retries, and retrying the same failed attempt reuse that key.
+- A new key is generated only when the user starts a new intent or changes the payload.
+- The key travels in the use-case input DTO and is stored with the operation it protects.
 
 ### Scope
 
-A key only means something inside its context. Store and look it up by:
+Store and look up the key by operation, plus company when the database holds several:
 
 ```text
-tenant_id + user_id + operation + idempotency_key
+company_id + operation + idempotency_key
 ```
 
-Never use a key as a global identifier. Two users, or two tenants, may legitimately send the
-same value.
+Never use a key to read a record outside the caller's company.
 
-### Claim Before Executing
+### Where To Store It
 
-Check-then-act races:
-
-```text
-find key
-if not found:
-    execute operation
-    save key
-```
-
-Two simultaneous requests both pass the check, and both execute. Claim the key atomically
-first, then execute only if the claim succeeded:
+Prefer a column on the record the operation creates:
 
 ```sql
-INSERT INTO idempotency_records (tenant_id, user_id, operation, key, request_hash, status)
-VALUES ($1, $2, $3, $4, $5, 'processing')
-ON CONFLICT (tenant_id, user_id, operation, key) DO NOTHING
+CREATE TABLE sales (
+    id              INTEGER PRIMARY KEY,
+    company_id      INTEGER NOT NULL REFERENCES companies (id),
+    idempotency_key TEXT    NOT NULL,
+    -- ...
+    UNIQUE (company_id, idempotency_key)
+) STRICT;
+```
+
+Use a shared table when the operation creates no single row, or its result must be replayed:
+
+```sql
+CREATE TABLE idempotency_records (
+    id              INTEGER PRIMARY KEY,
+    company_id      INTEGER NOT NULL REFERENCES companies (id),
+    operation       TEXT    NOT NULL,
+    idempotency_key TEXT    NOT NULL,
+    request_hash    TEXT    NOT NULL,
+    result_json     TEXT,
+    created_at      TEXT    NOT NULL,
+    UNIQUE (company_id, operation, idempotency_key)
+) STRICT;
+```
+
+### Claim Inside An Immediate Transaction
+
+Check-then-act races when it runs outside a write lock. Claim the key in the same immediate
+transaction as the effect:
+
+```sql
+INSERT INTO idempotency_records
+    (company_id, operation, idempotency_key, request_hash, created_at)
+VALUES (@CompanyId, @Operation, @Key, @RequestHash, @Now)
+ON CONFLICT (company_id, operation, idempotency_key) DO NOTHING
 RETURNING id;
 ```
 
-Only the request whose insert returned a row executes. Every other request reads the
-existing record.
+```csharp
+using var tx = connection.BeginTransaction(deferred: false); // BEGIN IMMEDIATE
+long? claimed = await connection.QuerySingleOrDefaultAsync<long?>(ClaimSql, args, tx);
+if (claimed is null)
+    return await ReplayAsync(connection, tx, args); // stored result, or payload mismatch
 
-```prisma
-enum IdempotencyStatus {
-  PROCESSING
-  COMPLETED
-}
-
-model IdempotencyRecord {
-  id           String            @id @default(cuid())
-  tenantId     String
-  userId       String
-  operation    String
-  key          String
-  requestHash  String
-  status       IdempotencyStatus @default(PROCESSING)
-  responseCode Int?
-  responseBody Json?
-  createdAt    DateTime          @default(now())
-  expiresAt    DateTime
-
-  @@unique([tenantId, userId, operation, key])
-  @@index([expiresAt])
-}
+// ... the effect, with the same transaction ...
+await connection.ExecuteAsync(StoreResultSql, new { Id = claimed, ResultJson = json }, tx);
+tx.Commit();
 ```
 
-With Prisma, the claim is a `create` that treats the unique violation `P2002` as "already
-claimed", or the raw `INSERT ... ON CONFLICT DO NOTHING` above.
+The immediate transaction serializes writers; the `UNIQUE` constraint keeps the claim correct
+even when a code path forgets it. Because the claim, the effect, and the result commit
+together, a crash leaves either all of them or none, and a retry after restart runs cleanly.
 
 ### Replay Rules
 
-| When the key already exists           | Response                                                      |
-| ------------------------------------- | ------------------------------------------------------------- |
-| Same payload, completed               | The stored status and body; nothing executes again            |
-| Same payload, still processing        | `409 Conflict` with a retry hint; nothing runs concurrently   |
-| Different payload                     | `422 Unprocessable Content`: the key was reused inconsistently |
-| Same value, other tenant or user      | Invisible: the scoped lookup treats it as a new key           |
+| When the key already exists          | Result                                                        |
+| ------------------------------------ | ------------------------------------------------------------- |
+| Same payload                         | The stored result, such as the sale and its number; nothing runs again |
+| Different payload                    | Error `idempotency.payload_mismatch`; nothing runs. It is a bug |
+| Same key, other company              | Invisible: the scoped lookup treats it as a new key            |
 
-Detect a different payload by hashing the validated, canonicalized payload at claim time and
-comparing on replay. Never silently execute a different request under a used key.
+Detect a different payload by hashing the validated, canonical input at claim time. Purge
+`idempotency_records` after a declared window longer than any retry window, such as 30 days.
 
-An operation the API declares as requiring a key rejects a request without one with
-`400 Bad Request`. It never falls back to running unprotected.
+### The Interface Helps, The Database Guarantees
 
-### Completing The Record
+`AsyncRelayCommand` disables itself while running and rejects concurrent execution by
+default. That prevents most double clicks. Only the database guarantees a single effect.
+See `feedback-and-states.md`.
 
-- When the effect is a database write, commit the effect and mark the record completed in the same transaction.
-- When execution fails before any effect is committed, release the claim so a retry can run.
-- When the operation reached a definitive business outcome, including a rejection, store it and replay it.
-- Keep records for a declared window, such as 24 hours, then purge them. State the window in the API contract.
+## External Side Effects
 
-### Keys Never Cross Accounts
+A remote call or an email never runs inside the local transaction. Record it as a pending
+operation in the same transaction as the business change, and let a hosted service execute
+it after commit.
 
-A key never grants access to another account's result. If a user in tenant A creates a
-transaction with `Idempotency-Key: abc123`, and a user in tenant B later sends `abc123`,
-tenant B must never receive tenant A's result.
-
-```text
-Right:  WHERE tenant_id = :currentTenant AND user_id = :currentUser AND key = :providedKey
-Wrong:  WHERE key = :providedKey
+```sql
+CREATE TABLE pending_operations (
+    id              INTEGER PRIMARY KEY,
+    company_id      INTEGER NOT NULL REFERENCES companies (id),
+    kind            TEXT    NOT NULL,          -- 'send_document_email', 'submit_invoice'
+    dedup_key       TEXT    NOT NULL,          -- sent to the remote service as its key
+    payload_json    TEXT    NOT NULL,
+    status          TEXT    NOT NULL CHECK (status IN
+                        ('pending', 'in_progress', 'succeeded', 'failed', 'needs_review')),
+    attempts        INTEGER NOT NULL DEFAULT 0,
+    next_attempt_at TEXT    NOT NULL,
+    last_error_code TEXT,
+    updated_at      TEXT    NOT NULL,
+    UNIQUE (company_id, kind, dedup_key)
+) STRICT;
 ```
 
-The tenant and user in that filter come from the session, as `../security/access-control.md`
-requires.
+- A worker claims a row with a guarded update, `SET status = 'in_progress' WHERE id = @Id AND
+  status = 'pending'`, and proceeds only when one row changed.
+- Send `dedup_key` as the idempotency key to remote services that accept one.
+- At startup, a row left `in_progress` is ambiguous: the remote call may have succeeded.
+- Retry with bounded exponential backoff and jitter, up to a declared attempt limit. Then set
+  `needs_review` and show it to the operator. See `feedback-and-states.md`.
+- Mark `failed` immediately on a definitive rejection; retries cannot fix it.
 
-### Client Responsibilities
+### Ambiguous Timeouts
 
-- Generate one key per user intent with `crypto.randomUUID()` when the submission starts.
-- Reuse that key for automatic retries and for retrying the same failed attempt.
-- Generate a new key when the user changes the payload or starts a new intent.
-- Let the shared mutation helper own this; see `feedback-and-states.md`.
+A timeout or a lost connection does not mean the remote operation failed.
 
-Disabling a button prevents most double clicks. Only the server guarantees a single effect.
+1. Query the remote status of the same operation by its key or document reference.
+2. When it exists, record its result locally and finish.
+3. When the remote service confirms it does not exist, retry with the same key.
+4. When the status cannot be determined, back off and ask again later.
 
-## Concurrency
+Never create a new remote document, with a new number or key, to compensate for an unknown
+outcome. See `integrations.md`.
 
-Always ask what happens when:
+## SQLite Concurrency
 
-- the user double-clicks;
-- the browser or HTTP client retries;
-- a mobile client loses and regains its connection;
-- a proxy resends the request;
-- two requests arrive at the same time;
-- a webhook arrives twice;
-- a job runs more than once.
+- SQLite allows one writer at a time. Start every write transaction with `BEGIN IMMEDIATE`,
+  `BeginTransaction(deferred: false)` in Microsoft.Data.Sqlite, so the lock is taken before
+  the first read.
+- SQLite has no `SELECT ... FOR UPDATE`. Inside an immediate transaction no other writer can
+  change what was read; still prefer guarded updates, which are correct in any transaction.
+- `busy_timeout` makes a second writer wait. If it still fails, return a retryable error.
+- Keep write transactions short. Never await a network call, a device, or a dialog inside one.
+- For edits that span user think time, use optimistic concurrency with a version column:
 
-Rules:
+```sql
+UPDATE products
+SET name = @Name, price_minor = @PriceMinor, version = version + 1
+WHERE id = @Id AND company_id = @CompanyId AND version = @Version;
+```
 
-- Enforce critical invariants in the database: unique constraints, check constraints, foreign keys, and guarded updates. Checks in application code alone race.
-- Wrap multi-step mutations in a transaction.
-- When two writers can touch the same row, use a row lock (`SELECT ... FOR UPDATE`) or optimistic concurrency with a version column.
-- For money and inventory, never read, modify, and write in application code without a lock or a conditional update.
-
-## Events, Webhooks, And Jobs
-
-Delivery is at least once. Every consumer is designed for duplicates.
-
-- Inbound webhooks: verify them, record the provider event ID under a unique constraint, and skip effects already applied. See `integrations.md`.
-- Jobs: give each one a deduplication key, make handlers idempotent, and guard their effects with state transitions.
-- Outbound calls: send our own idempotency key to providers that accept one. A timeout is ambiguous, because the provider may have succeeded, and the retry must not charge twice.
-- Do not assume ordering. Check the current state before applying an event.
+Zero affected rows means someone else saved first: return `concurrency.conflict`, reload,
+and let the user decide. Never overwrite silently.
 
 ## Verification
 
 - [ ] Every mutation with a meaningful side effect declares how it is idempotent.
 - [ ] Natural idempotency was preferred wherever the operation allows it.
-- [ ] Keys are scoped by tenant, user, and operation, and claimed atomically before execution.
-- [ ] Replays return the stored outcome; payload mismatches and in-flight duplicates are rejected.
-- [ ] Critical invariants are database constraints or guarded updates, not code checks alone.
-- [ ] Webhook, job, and outbound-call handlers tolerate duplicates.
-- [ ] The idempotency tests in `../quality/testing.md` exist and pass.
+- [ ] Guarded updates check the affected row count.
+- [ ] Keys are generated when the intent starts, reused on retries, scoped by company and
+      operation, and claimed in the same immediate transaction as the effect.
+- [ ] Replays return the stored result; payload mismatches are rejected.
+- [ ] External side effects run from `pending_operations` after commit, with bounded backoff.
+- [ ] Ambiguous outcomes query the remote status before retrying.
+- [ ] Edits across user think time use a version column.
+- [ ] The idempotency tests in `../quality/testing.md` exist and pass, including a restart
+      mid-operation and two genuinely concurrent writers on a real SQLite file.
