@@ -1,6 +1,6 @@
 ---
 name: update-documentation
-description: Use when behavior, API routes, architecture decisions, database schema, quality rules, or security constraints change.
+description: Use when behavior, use-case contracts, external contracts, architecture decisions, database schema, quality rules, or security constraints change.
 ---
 
 # Update Documentation
@@ -20,8 +20,8 @@ Read the document closest to the changed behavior:
 
 1. Identify what changed.
 2. Update the source-of-truth document.
-3. Update generated or derived references if contracts changed.
-4. Record decisions when tradeoffs were made.
+3. Regenerate references in `docs/generated/` when the schema, migrations, use cases, or external contracts changed.
+4. Record decisions as ADRs in `docs/architecture/adr/` when tradeoffs were made.
 5. Keep docs concise and navigable.
 
 ## Guardrails

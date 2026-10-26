@@ -54,20 +54,38 @@ Making the boundary explicit usually simplifies the control flow around it.
 
 ### Security
 
-Apply `../security/hardening.md`. Confirm input is validated at boundaries, queries are
-parameterized, authorization is enforced server-side per record, secrets stay out of code
-and logs, output is encoded, and data from external sources is treated as untrusted.
+Apply `../security/hardening.md`. Confirm input is validated at the use-case boundary,
+SQL is parameterized, authorization is enforced in the use case per record, secrets stay out
+of code, configuration, and logs, and data from files and external services is treated as
+untrusted. See `../security/access-control.md`.
 
-Hunt the patterns listed in `../security/access-control.md`: lookups by a client-supplied ID
-without a tenant scope, identity read from the payload, payloads passed to the ORM, and
-permissions enforced only in the interface. Then ask what happens when each request arrives
-twice or concurrently: critical `POST` operations, webhooks, and balance or inventory changes
-must be idempotent and transactional. See `../architecture/idempotency.md`.
+Hunt these .NET patterns:
+
+| Pattern                                                    | Why it matters                             |
+| ---------------------------------------------------------- | ------------------------------------------ |
+| SQL built by string concatenation or interpolation         | Injection; allowlist dynamic sort columns  |
+| Lookup by ID without the company scope, when multi-company | Another company's record becomes reachable |
+| ViewModel calling Dapper, `HttpClient`, or file APIs       | Breaks the interface boundary; untestable  |
+| WPF types in a ViewModel or in `Application`               | Breaks the dependency direction            |
+| `async void` outside event handlers                        | Exceptions crash the process unobserved    |
+| `.Result`, `.Wait()`, or `GetAwaiter().GetResult()`        | Deadlocks and freezes the UI thread        |
+| `double` or `float` for money                              | Rounding errors in amounts and taxes       |
+| `DateTime.Now` in domain or application logic              | Untestable time; inject `TimeProvider`     |
+| I/O method without a `CancellationToken`                   | Work cannot be cancelled or bounded        |
+| Binding errors in the output                               | Silent defects and wasted updates          |
+| Secrets in `appsettings.json`                              | Readable by anyone with the file           |
+| `catch` that ignores or only logs and continues            | Hides failures and corrupts state          |
+| Multi-step write without one transaction                   | Partial sales, stock, or numbering         |
+| Edited migration that was already applied                  | Checksum failure or divergent schemas      |
+
+Then ask what happens when each command runs twice or concurrently: a double click, a retry,
+a restart, or a second window. Money, stock, and sequential-number changes must be
+idempotent and transactional. See `../architecture/idempotency.md`.
 
 ### Performance
 
-Apply `performance.md`. Look for N+1 patterns, unbounded queries, list endpoints without
-pagination, synchronous heavy work in the request path, and avoidable re-renders.
+Apply `performance.md`. Look for N+1 patterns, unbounded queries, grids bound to whole
+tables, missing virtualization, and disk, database, or network work on the UI thread.
 
 ## Finding Severity
 
@@ -133,7 +151,8 @@ Upgrading is a code change like any other, and bulk bumps are the riskiest:
 - read the changelog, not the version number; a patch release can carry behavior changes;
 - upgrade one dependency per change, so a broken build names its cause and the revert stays clean;
 - require a green suite before and after; thin coverage around the dependency is itself the finding;
-- review the lockfile diff, never hand-edit it, and always commit it.
+- review the `packages.lock.json` diff, never hand-edit it, and always commit it;
+- confirm NuGet Audit reports no known vulnerability.
 
 ## Honesty
 
@@ -155,8 +174,8 @@ Findings should include:
 
 If there are no findings, say that clearly and mention residual risk or untested areas.
 
-For frontend reviews, use `frontend-checklist.md`. Report duplicated surfaces, inconsistent
-table behavior, technical language, missing states, overflow, inaccessible controls, and
+For interface reviews, use `ui-checklist.md`. Report duplicated surfaces, inconsistent
+grid behavior, technical language, missing states, overflow, inaccessible controls, and
 visual fatigue as real product defects rather than cosmetic preferences.
 
 ## Reject The Change When
@@ -167,7 +186,8 @@ visual fatigue as real product defects rather than cosmetic preferences.
 - feature logic was added to a shared module;
 - a bespoke helper duplicates an existing canonical one;
 - a silent fallback hides an unclear invariant;
-- a private record is reachable through a client-supplied ID without a tenant scope;
-- a critical mutation can run twice with no idempotency key, natural key, or guarded update;
-- dependencies were bumped in bulk with no changelog review or lockfile diff;
+- a private record of another company is reachable through an ID without the company scope;
+- a critical write can run twice with no idempotency key, natural key, or guarded update;
+- a multi-step write runs outside one transaction, or an applied migration was edited;
+- dependencies were bumped in bulk with no changelog review or lock file diff;
 - it is too large to review properly. Ask for the split instead of skimming.

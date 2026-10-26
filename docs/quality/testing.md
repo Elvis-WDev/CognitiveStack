@@ -1,69 +1,108 @@
 # Testing Strategy
 
-## Test Pyramid
+## Test Layers
 
-- Unit tests for pure domain logic.
-- Use-case tests for application behavior.
-- Integration tests for database, HTTP, auth, and external boundaries.
-- End-to-end tests for critical user workflows.
+| Layer              | Runs on        | Covers                                                                       |
+| ------------------ | -------------- | ---------------------------------------------------------------------------- |
+| Unit               | Linux, Windows | Values, money and tax rounding, invariants, state machines, time changes     |
+| SQLite integration | Linux, Windows | Schema, migrations, transactions, concurrency, backup, restore, indexes      |
+| External contracts | Linux, Windows | HTTP fixtures and fakes, XML against its XSD if used, timeouts               |
+| Email              | Linux, Windows | MIME structure, recipients, encoding, and attachments, read from Mailpit     |
+| ViewModel          | Linux, Windows | Commands, validation, loading, error, empty, and cancellation states         |
+| Wine smoke         | Linux          | Startup, main bindings, and navigation to each module, via `scripts/wine.sh` |
+| Windows acceptance | Windows 10, 11 | WPF rendering, DPI, printers, installer, updater, and rollback               |
+
+- Unit tests drive time with `FakeTimeProvider`.
+- Integration tests use a real database in a temporary file, and run migrations both from an
+  empty database and from a copy at the previous version. Concurrency tests open two
+  connections to the same file.
+- ViewModel tests run without WPF, against fakes of the use cases and of `IDialogService`,
+  `INavigationService`, and `IFeedbackService`.
+
+`dotnet test {{ProjectName}}.slnx` runs every layer except WPF UI, which never runs on
+Linux. Wine smoke runs catch startup and binding failures; they do not certify
+compatibility.
+
+## Writing Tests
+
+- Keep tests deterministic: inject `TimeProvider`, use fakes behind ports, and load fixtures
+  from files. No sleeps, no wall-clock time, no machine-specific paths or culture.
+- Name tests `Method_Scenario_Result`, for example
+  `Register_DuplicateKey_ReturnsStoredResult`.
+- Structure each test as Arrange, Act, Assert.
+- Cover risks, not a coverage number. A high percentage over trivial code proves nothing.
+- Never mock SQL. A repository test runs its real SQL against a real SQLite file.
 
 ## What Must Be Tested
 
 - Validation boundaries, including the rejection paths and not only the accepted input.
-- Auth and permissions, including access to a record the caller does not own.
-- Error responses.
-- Data persistence.
-- Background jobs and cancellation.
-- External service failure modes.
-- Better Auth protected-route behavior.
-- Prisma repository behavior for critical writes.
-- PostgreSQL migration assumptions.
-- React Hook Form validation paths.
-- Table search, filters, sorting, pagination, column visibility, and row actions.
-- Modal focus management, dismissal, scroll containment, and submission states.
-- Toast semantics and retry behavior for successful and failed actions.
-- Responsive layout, long text, empty collections, large collections, and dark mode.
-- Permission-driven navigation and action visibility.
+- Authorization, including access to a record the caller does not own.
+- Every result code a use case can return.
+- Persistence of critical writes, and rollback of every multi-step write that fails midway.
+- Pending operations: resume after restart, retry, and cancellation.
+- External service failure modes: timeout, refusal, malformed response, and partial success.
+- Grid search, filters, sorting, paging, and row actions in the grid ViewModel.
+- Dialog results, cancellation, and repeated command execution in the ViewModel.
+- Feedback for successful and failed commands through `IFeedbackService`.
+- Permission-driven navigation and command availability.
+
+## Cases That Are Never Skipped
+
+| Case                                                          | Expected                                             |
+| ------------------------------------------------------------- | ---------------------------------------------------- |
+| The same operation runs twice                                 | One effect; the second run returns the stored result |
+| Two simultaneous attempts, from two connections               | Exactly one effect; the other gets a conflict        |
+| Crash between the local commit and the external call          | Pending operation resumes; no duplicate              |
+| External side effect fails after the main operation succeeded | Local record kept, retried, user informed            |
+| Empty database, and the first import into it                  | Usable screens, correct import                       |
+| A migration fails midway                                      | Rolled back, backup intact, clear message            |
+| Disk full while writing or backing up                         | Clear error; no partial backup reported as good      |
+| Invalid or corrupted backup                                   | Rejected before restore; current data untouched      |
+| Restore when external records are newer than the backup       | Reconciled first; numbers never reused               |
+| Expired certificate or credential                             | Actionable error; no silent retry loop               |
+| Several users on the same database                            | Each acts only within their role                     |
+| A permission changes during a session                         | The next sensitive command honors it                 |
 
 ## Access Control Tests
 
-Every endpoint that touches private data carries these cases:
+Every use case that touches private data carries these cases:
 
-| Case                                                          | Expected                                            |
-| ------------------------------------------------------------- | --------------------------------------------------- |
-| User A acts on resource A                                     | Allowed                                             |
-| User B acts on resource A                                     | `404`, as if the resource did not exist             |
-| User A edits the ID in the path to reach resource B           | `404`, and nothing is returned or changed           |
-| User A sends another tenant's ID in the body or query         | Ignored or rejected; the session tenant still holds |
-| User A references another tenant's record as a foreign key    | Rejected                                            |
-| A user without the required role calls an admin operation     | `403`, and nothing changes                          |
-| The payload carries `role`, `tenantId`, `isAdmin`, or `balance` | Rejected by the strict schema, and nothing changes |
+| Case                                                             | Expected                                       |
+| ---------------------------------------------------------------- | ---------------------------------------------- |
+| User A acts on a resource of company A                           | Allowed                                        |
+| User of company B acts on a resource of company A                | `not_found`, as if the resource did not exist  |
+| A command carries the ID of a record from another company        | `not_found`; nothing is returned or changed    |
+| Input references another company's record as a foreign key       | Rejected                                       |
+| A user without the required role runs an admin use case          | `forbidden`, and nothing changes               |
+| Input carries a role, company, or balance the caller may not set | Ignored by the input DTO, and nothing changes  |
 
-Cover IDOR, BOLA, tenant hopping, role manipulation, mass assignment, and parameter
-tampering explicitly. Fixtures always include at least two tenants, so a missing filter
-fails a test instead of passing silently.
+When one database holds several companies or workspaces, fixtures always include at least
+two, so a missing scope fails a test instead of passing silently. Single-company products
+keep the role and foreign-ID cases.
 
 ## Idempotency Tests
 
-| Case                                       | Expected                                  |
-| ------------------------------------------ | ----------------------------------------- |
-| First request with a key                   | Processed normally                        |
-| Same request repeated with the same key    | Same outcome, effect not repeated         |
-| Two simultaneous requests with the same key | Exactly one effect                       |
-| Same key in different tenants              | Completely independent outcomes           |
-| Same key with a different payload          | `422`, and nothing executes               |
-| Same key while the first is still running  | `409`, and nothing runs concurrently      |
-| Same webhook event delivered twice         | One effect, both deliveries acknowledged  |
-| Same job executed twice                    | One effect                                |
+| Case                                          | Expected                                                |
+| --------------------------------------------- | ------------------------------------------------------- |
+| First execution with a key                    | Processed normally                                      |
+| Same operation repeated with the same key     | Same stored result, effect not repeated                 |
+| Two simultaneous executions with the same key | Exactly one effect                                      |
+| Same key in different companies               | Completely independent outcomes                         |
+| Same key with a different input               | `idempotency.payload_mismatch`, and nothing executes    |
+| Same key while the first is still running     | Waits for the writer, then returns the stored result    |
+| Same pending operation resumed twice          | One effect                                              |
 
-Test concurrency with genuinely parallel requests against PostgreSQL, not sequential calls
-against a mock. A race the test cannot produce is a race the test cannot catch.
+Test concurrency with two real connections to the same SQLite file and genuinely parallel
+tasks, not sequential calls against a fake. A race the test cannot produce is a race the
+test cannot catch.
 
 Never loosen an authorization check or a constraint to make one of these tests pass.
 
-## Test Data
+## Test Data And External Environments
 
-- Use deterministic fixtures.
-- Avoid real secrets.
-- Avoid relying on unstable external services in CI.
-- Mock external APIs behind typed client ports.
+- Use deterministic fixtures with synthetic data. Never use real customer data or secrets.
+- Keep unstable external services out of the default test run.
+- Fake external services behind their ports; record contract fixtures from documentation or
+  sanitized sandbox responses.
+- Tests that touch a real external test environment are explicit, segregated in their own
+  category or project, opt-in through configuration, and never run with real customer data.

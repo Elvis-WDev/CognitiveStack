@@ -17,10 +17,10 @@ Read:
 
 1. Read the full diff before staging anything.
 2. Group the diff into coherent units: one feature, one fix, or one refactor per unit.
-3. Order the units by dependency: schema, then API, then interface.
+3. Order the units by dependency: migration, then domain and use case, then ViewModel and view.
 4. State the planned split when the work covers several units.
 5. Stage one unit and confirm the staged diff contains only that unit.
-6. Run the project verification commands.
+6. Run the project verification commands: `dotnet restore --locked-mode`, `dotnet build {{ProjectName}}.slnx -warnaserror`, `dotnet test {{ProjectName}}.slnx`, and `dotnet format {{ProjectName}}.slnx --verify-no-changes`.
 7. Write `type(scope): imperative subject`, under 72 characters, naming what changed.
 8. Add a body only when the reason is not obvious, at most three short lines.
 9. Repeat for the next unit.
@@ -33,7 +33,8 @@ Read:
 - Do not separate tests or documentation from the behavior they describe.
 - Do not stage everything without reading what it picked up.
 - Do not list changed files or paste verification output into the message.
-- Do not commit secrets, environment files, build output, or dependency directories.
+- Do not commit secrets, local settings, `bin/`, `obj/`, local databases, or logs.
+- Do commit `packages.lock.json` changes with the package change that caused them.
 - Do not commit to the default branch when the project reviews through pull requests.
 - Do not rewrite published history without an explicit request.
 - Do not describe work in a message that a later commit will actually do.

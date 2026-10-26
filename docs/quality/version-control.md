@@ -5,13 +5,13 @@
 One commit is one coherent change: something a reviewer can read on its own, and something
 that can be reverted without dragging unrelated work with it.
 
-| Work                                 | Commits                  |
-| ------------------------------------ | ------------------------ |
-| One feature inside one layer         | 1                        |
-| Feature crossing schema, API, and UI | 2-4, in dependency order |
-| Bug fix and its regression test      | 1                        |
-| Refactor plus a behavior change      | 2, refactor first        |
-| A whole working session              | Never 1                  |
+| Work                                      | Commits                  |
+| ----------------------------------------- | ------------------------ |
+| One feature inside one layer              | 1                        |
+| Feature crossing schema, use case, and UI | 2-4, in dependency order |
+| Bug fix and its regression test           | 1                        |
+| Refactor plus a behavior change           | 2, refactor first        |
+| A whole working session                   | Never 1                  |
 
 Rules:
 
@@ -53,9 +53,9 @@ Body:
 
 | Instead of                                       | Write                                          |
 | ------------------------------------------------ | ---------------------------------------------- |
-| `updates`, `changes`, `WIP`, `final`             | `fix(auth): reject expired session cookies`    |
+| `updates`, `changes`, `WIP`, `final`             | `fix(backup): reject copies that fail checks`  |
 | `feat: add users module, dialogs and validation` | `feat(users): add user list and create dialog` |
-| `docs: update`                                   | `docs(tables): document pagination contract`   |
+| `docs: update`                                   | `docs(grids): document the paging contract`    |
 
 ## Before Every Commit
 
@@ -63,8 +63,8 @@ Body:
 2. Stage intentionally; never stage everything without reading what it picked up.
 3. Confirm the staged diff contains one unit and nothing else.
 4. Run the project verification commands.
-5. Confirm no secrets, environment files, credentials, tokens, build output, or dependency
-   directories are staged.
+5. Confirm no secrets, local settings, credentials, tokens, build output, local databases, or
+   logs are staged.
 
 ## Branches And Pull Requests
 
@@ -77,9 +77,10 @@ Body:
 
 ## Repository Hygiene
 
-- Every application repository has a `.gitignore` covering environment files, dependency
-  directories, build output, and local tooling artifacts.
-- Lockfiles are committed.
+- Every application repository has a `.gitignore` covering `bin/`, `obj/`, `.vs/`, `*.user`,
+  `TestResults/`, local databases (`*.db`, `*.db-wal`, `*.db-shm`), logs, local settings
+  with secrets, and other local tooling artifacts.
+- `packages.lock.json` files are committed, and `Directory.Packages.props` changes with them.
 - Generated files are committed only when the project documents them as tracked.
 - Secrets never enter history. A committed secret is rotated, not just deleted in a later commit.
 
