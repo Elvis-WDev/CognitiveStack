@@ -1,28 +1,39 @@
 # Security Principles
 
-- Design the backend as if the frontend were fully controlled by an attacker.
-- Knowing an identifier is never authorization. Scope every private query by tenant and ownership.
-- Derive identity, tenant, and role from the session, never from the request.
+- Treat the PC, its Windows users, and its files as outside our control. Enforce rules in use
+  cases; the interface only mirrors them.
+- Be honest about limits: application authorization does not stop someone who can read or
+  edit the database file. Use OS permissions, encryption, and tamper evidence for that.
+- Knowing an identifier is never authorization. Scope every private query by company and
+  ownership.
+- Derive user, role, and company from the session service, never from input DTOs.
+- Deny by default. Every sensitive use case checks an explicit permission.
 - Make every critical side effect idempotent, and enforce critical invariants in the database.
-- Secrets are never committed.
-- Provider tokens stay server-side.
-- Validate input at every boundary.
-- Use least-privilege credentials in production.
-- Do not expose internal provider details unless users need them.
-- Authentication and authorization must be explicit on protected routes.
-- Avoid storing sensitive data unless there is a clear product need.
-- Use Better Auth instead of custom auth primitives.
-- Store sessions in the configured Better Auth persistence layer.
-- Use PostgreSQL credentials with the minimum privileges needed after migrations.
-- Use HTTP-only cookies for sessions.
+- Validate input at every boundary: files, imports, devices, configuration, and remote
+  responses.
+- Never write custom cryptography. Use the platform's password hashing, DPAPI, and signature
+  verification.
+- Secrets are never committed and never shipped. Machine secrets live in DPAPI or Windows
+  Credential Manager.
+- Binaries are public. No private key for licenses, updates, or signing ships in the client.
+- Sign what we ship, and verify what we install.
+- The application runs as a standard user; elevation is for installation only.
+- Collect only the personal data the product needs, and keep it out of logs and support
+  bundles.
+- Do not expose provider names, paths, or internal details unless users need them.
 
-## Environment Variables
+## Configuration
 
-Document required variables in the app repo, not in this template.
+Document required settings in the application repository. Shipped configuration holds
+defaults and references, never secret values:
 
-Use placeholders only:
-
-```text
-SERVICE_API_TOKEN=replace-with-token
-DATABASE_URL=replace-with-url
+```json
+{
+  "Billing": {
+    "BaseAddress": "https://api.example.com/",
+    "CredentialName": "{{ProjectName}}/Billing"
+  }
+}
 ```
+
+The credential itself is stored on the machine. See `hardening.md`.

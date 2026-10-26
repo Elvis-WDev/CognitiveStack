@@ -2,40 +2,52 @@
 
 ## Assets
 
-- User data.
-- Auth sessions.
-- Database credentials.
-- External provider tokens.
-- Generated files and exports.
-- The isolation between tenants.
-- Balances, credits, inventory, and other counted values.
+- Business records: sales, invoices, payments, stock, cash, and sequential numbers.
+- Personal data of customers, employees, and operators.
+- Local users, roles, and password hashes.
+- Secrets on the machine: API tokens, SMTP credentials, and client certificates.
+- Vendor keys: code-signing certificate and the private keys for licenses and updates.
+- The update channel and the shipped binaries.
+- Backups, the audit trail, logs, and support bundles.
+- The isolation between companies inside one database.
 
 ## Trust Boundaries
 
-- Browser to API.
-- API to database.
-- API to external provider.
-- External provider webhooks to API.
-- Tenant to tenant, inside the same database.
-- Background job runner to database.
-- CI/deployment to production environment.
+- Operator to application, through the interface.
+- Windows user or process to the application's files, outside the application.
+- Application to SQLite, which anyone with file access can also open.
+- Application to external services: HTTP APIs and SMTP.
+- Application to devices, imported files, and configuration.
+- Vendor update and license services to the application.
+- Vendor build and signing pipeline to the shipped binaries.
+- Company to company, inside the same database.
+- The PC to external backup media.
+- Support channel to the PC: remote sessions and support bundles.
 
 ## Threats
 
 | Threat | Impact | Mitigation |
 | --- | --- | --- |
-| Token leakage | Provider abuse | Keep tokens server-side and out of logs. |
-| Unauthorized data access | Privacy breach | Enforce auth middleware and permission checks. |
-| IDOR / BOLA: editing an ID in the request | Another account's record exposed or changed | Scope every private query by tenant and ownership. See `access-control.md`. |
-| Tenant hopping: sending another tenant's ID | Cross-account breach | Resolve the tenant from the session only; composite foreign keys; cross-tenant tests. |
-| Role manipulation | Vertical privilege escalation | Server-side role policy; roles never client-writable; no self-promotion. |
-| Mass assignment | Tampered role, tenant, or balance | Strict allowlisted schemas for every write. |
-| Resource enumeration | Discovery of other accounts' records | `404` outside the tenant; non-sequential public identifiers. |
-| Leaked signed URL | File exposure | Short expiry, single-object scope, ownership checked before signing, never logged. |
-| Duplicate request: retry, double submit, replay | Double charge or duplicate record | Natural idempotency or scoped idempotency keys. See `../architecture/idempotency.md`. |
-| Concurrent writes | Negative balance, oversold stock | Database constraints, guarded updates, transactions, and locks. |
-| Webhook replay or forgery | Repeated or forged effects | Signature on the raw body, timestamp tolerance, event ID deduplication. |
-| Unvalidated bulk input | Data corruption | Validate, chunk, and report progress. |
-| Hand-rolled authentication | Account compromise | Use Better Auth and documented auth middleware. |
-| Overprivileged database user | Production data loss | Reduce privileges after migrations. |
-| External outage | Workflow failure | Normalize errors and expose retry-safe states. |
+| Unlocked PC used by someone else | Actions under another operator's identity | Auto-lock, re-authentication for privileged actions, audit. See `../architecture/authentication.md`. |
+| PC or disk stolen, database copied | Data breach | BitLocker or database encryption by ADR, data minimization, encrypted backups. See `hardening.md`. |
+| Malware on the PC | Stolen data and credentials | Standard-user runtime, DPAPI per user, no plaintext secrets, signed binaries. Not fully preventable; say so. |
+| Binary decompiled for embedded secrets | Abused vendor services, forged licenses | No private keys or shared secrets in the client; public keys only. See `hardening.md`. |
+| SQLite edited with an external tool | Fraud, inconsistent books | Database constraints, audit log, integrity checks, optional hash chain, reconciliation. See `access-control.md`. |
+| Signing certificate stolen | Malware signed as the vendor | Key in hardware or a signing service, restricted signers, revocation plan. See `../architecture/distribution.md`. |
+| Forged or tampered update | Code execution on every customer PC | Signed manifest and package, verified before install, no server-supplied scripts. |
+| Old update replayed | Known vulnerabilities reintroduced | Monotonic version check; downgrades only by signed rollback manifest. |
+| Power loss or crash mid-operation | Corrupted or half-written data | Transactions, `synchronous = FULL`, WAL, pending operations, verified backups. See `../architecture/database.md`. |
+| Double click, retry, or restart repeats a command | Duplicate sale, payment, or document | Natural idempotency or scoped keys. See `../architecture/idempotency.md`. |
+| Two windows, users, or a job write at once | Oversold stock, negative balance | Immediate transactions, guarded updates, version columns, constraints. |
+| Operator fraud: voids, discounts, cash | Financial loss | Permissions, supervisor override, limits, audit with both users, per-operator void and discount reports, cash reconciliation. |
+| Role manipulation or interface bypass | Privilege escalation | Authorization in use cases, deny by default, no self-promotion. See `access-control.md`. |
+| Operator reaches another company's data | Cross-company breach | Company from the session, scoped queries, composite foreign keys, two-company tests. |
+| Local password brute force or default account | Account takeover | Approved password hashing, lockout with backoff, first administrator created in setup. |
+| Personal data in logs or support bundles | Privacy breach | Redaction, minimization, reviewed and consented bundles. See `hardening.md`. |
+| Unauthorized remote control of the PC | Attacker operates the application | Auto-lock, re-authentication and override for privileged actions, audit, no built-in remote access. |
+| Malicious imported file or XML | Corruption, file disclosure | Staged validated imports, safe XML settings, canonical paths. See `hardening.md`. |
+| Compromised or typosquatted NuGet package | Malicious code in the build | Central Package Management, lock files, NuGet Audit, source mapping, review. |
+| License file or clock tampering | Unlicensed use | Signed licenses verified with a public key, last-trusted-time checks. |
+| External service outage or ambiguous timeout | Lost results or duplicate remote documents | Pending operations, status query before retry, never a new document to compensate. See `../architecture/integrations.md`. |
+| Restore from an old backup | Reused sequential numbers, lost external results | Reconcile with the external authority before creating records. See `../architecture/database.md`. |
+| Leaked SMTP or API credential | Abuse under the customer's account | Secret store, per-installation credentials, rotation. |

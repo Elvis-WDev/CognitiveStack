@@ -1,186 +1,206 @@
 # Access Control
 
-Design the backend on the premise that the frontend is fully controlled by an attacker. Any
-request can be edited by hand, replayed from curl, sent twice, or sent concurrently, and
-every value in it can be changed.
+The PC and its local users are outside our control. Views and ViewModels can be bypassed by a
+defect, a new code path, or a background job, so every sensitive rule lives in the use case.
+`CanExecute`, hidden buttons, and disabled fields are presentation only.
 
-Knowing an identifier is never authorization. An ID, UUID, slug, URL, transaction
-reference, organization ID, or file ID proves only that the caller has seen it, not that the
-caller may use it. Every access to private data is validated explicitly against the
-authenticated identity and its authorization context.
+Knowing an identifier is never authorization. An ID, a document number, or a file name in a
+use-case input proves only that the caller has seen it. Every access to private data is
+validated against the session and its company.
 
-When a convenient option competes with a slightly more complex secure one, choose the
-secure one. Never trade data isolation for simpler code.
+When a convenient option competes with a slightly more complex secure one, choose the secure
+one. Never trade data isolation for simpler code.
+
+## What Application Authorization Protects
+
+Anyone with access to the data folder can open SQLite with any tool, read every table, and
+edit any row. Anyone with administrator rights can patch the binaries. State the limits
+honestly in each product:
+
+| Threat | Application authorization | Also needs |
+| --- | --- | --- |
+| Operator exceeds their role through the interface | Stops it | Audit |
+| Operator acts for another company in the same database | Stops it | Tests with two companies |
+| Mistake or defect in a new screen or job | Stops it, when checks live in use cases | Tests |
+| Windows user reads the database file | Nothing | OS folder permissions, encryption at rest |
+| Someone edits rows with a SQLite tool | Nothing | Tamper evidence, integrity checks, reconciliation |
+| Disk or PC stolen | Nothing | BitLocker or database encryption, encrypted backups |
+| Administrator patches the binaries | Nothing | Signed binaries, server-side checks where an authority exists |
+
+- Per-machine data in `%ProgramData%` gets folder permissions from the installer, limited to
+  the users who run the application. Per-user data in `%LocalAppData%` is protected by the
+  Windows account.
+- Encryption at rest, such as BitLocker or an encrypted SQLite build, is an ADR decision. A
+  key stored on the same machine protects against copying the file elsewhere, not against
+  the signed-in Windows user.
 
 ## Four Different Questions
 
-| Question          | Meaning                                         | Answered by                                   |
-| ----------------- | ----------------------------------------------- | --------------------------------------------- |
-| Authentication    | Who is the caller?                              | Better Auth session, through auth middleware  |
-| Authorization     | What may the caller do?                         | Server-side role and permission policy        |
-| Ownership         | Which records may the caller act on?            | A scoped query against the server context     |
-| Tenant isolation  | Whose account data may the caller see at all?   | The tenant filter on every private query      |
+| Question          | Meaning                                       | Answered by                                  |
+| ----------------- | --------------------------------------------- | -------------------------------------------- |
+| Authentication    | Who is the operator?                          | Local sign-in, through the session service. See `../architecture/authentication.md` |
+| Authorization     | What may the operator do?                     | The permission policy, checked in the use case |
+| Ownership         | Which records may the operator act on?        | A query scoped by the session context        |
+| Company scoping   | Whose data may the operator see at all?       | The company filter on every private query    |
 
-Passing one check never implies another. An authenticated admin of tenant A has no
-ownership of any record in tenant B.
+Passing one check never implies another. An administrator of company A has no ownership of
+any record in company B.
 
-## Identity Comes From The Server
+## Identity Comes From The Session
 
-- Authenticate before anything else touches the request.
-- Derive user, tenant, and role only from the validated session or the server-side membership record.
-- Never decide permissions from a `userId`, `accountId`, `tenantId`, `organizationId`, `role`, or equivalent sent by the client.
-- When the server can derive a value, ignore or reject the client-supplied copy.
-- When a user belongs to several tenants, the tenant the client selects is a request for a context. Verify membership on every request before using it.
+- Use cases read user, role, permissions, and selected company from `ICurrentSession`.
+- Input DTOs never carry `UserId`, `Role`, `CompanyId`, or permissions that decide access.
+- Selecting a company is a request for a context. The session service verifies the user's
+  membership before switching, and clears data cached for the previous company.
 
-```ts
-// Wrong: the client chooses whose data this is.
-const accountId = req.body.accountId;
+```csharp
+// Wrong: the caller decides whose data this is.
+public sealed record VoidSaleInput(long SaleId, long CompanyId, string Reason);
 
-// Right: the authenticated context decides.
-const accountId = req.auth.accountId;
+// Right: the session decides.
+public sealed record VoidSaleInput(long SaleId, string Reason);
+// inside the use case
+var companyId = session.CompanyId;
 ```
-
-Use cases receive this context as plain data, as `../architecture/backend.md` requires. They
-never read identity from the request payload.
-
-## Object-Level Authorization
-
-Endpoint-level checks are not enough. A route guarded by authentication still serves every
-record whose ID the caller can type. Authorize each object.
-
-Scope the query itself. Never fetch by ID first and rely on the frontend not to display the
-result.
-
-```ts
-// Wrong: any authenticated user can read any invoice by changing the ID.
-const invoice = await prisma.invoice.findUnique({
-  where: { id: req.params.invoiceId },
-});
-
-// Right: the record must belong to the caller's account, or it does not exist.
-const invoice = await prisma.invoice.findFirst({
-  where: { id: req.params.invoiceId, accountId: req.auth.accountId },
-});
-```
-
-Rules:
-
-- Check ownership for every verb and side door: read, create, update, delete, download, export, share.
-- Check every referenced ID in a payload too. Creating a task with a `projectId` from another tenant is cross-tenant access through a foreign key.
-- Mutate through the same scope: `update` and `delete` filter by tenant as well as by ID, so a record outside the scope fails as not found.
-- Prefer a centralized, tenant-aware repository or policy layer so the scope cannot be forgotten in one handler.
-
-Ownership checks matter most on files, private images, documents, orders, invoices, payments,
-messages, conversations, reports, projects, API keys, settings, integrations, logs, exports,
-and backups.
-
-A UUID is not authorization, and an unguessable URL is not access control.
-
-## Tenant Isolation
-
-When the application serves several accounts, companies, organizations, workspaces, or
-tenants, data isolation is an architectural requirement, not a feature.
-
-- Every tenant-owned table carries an explicit tenant column. Pick one name per project, such as `tenant_id`, `organization_id`, `account_id`, or `workspace_id`, and use it everywhere.
-- Every query on private data filters by that column, and its value comes from the authenticated server context.
-- Make the unscoped query hard to write: repository methods for tenant-owned data require the tenant context as a parameter, and no `findById(id)` exists for them.
-
-```sql
--- Wrong
-SELECT * FROM documents WHERE id = $1;
-
--- Right
-SELECT * FROM documents WHERE id = $1 AND tenant_id = $2;
-```
-
-Add defense in depth where the risk justifies it:
-
-- composite indexes and uniques that lead with the tenant column, such as `(tenant_id, id)`;
-- composite foreign keys, such as `(tenant_id, project_id) -> projects (tenant_id, id)`, so a child row cannot reference another tenant's parent;
-- PostgreSQL Row-Level Security, with the tenant set per transaction and never per pooled connection;
-- authorization middleware and tenant-scoped ORM extensions;
-- access auditing, as described in `../quality/observability.md`.
-
-See `../architecture/database.md` for the constraints themselves.
 
 ## Roles And Permissions
 
-When roles exist, such as `owner`, `admin`, `manager`, `member`, and `viewer`, map them to
-explicit permissions in one server-side policy, and check the permission for every sensitive
-operation.
+When roles exist, such as `operator`, `supervisor`, and `admin`, map them to explicit
+permissions in one policy in `Application`, and check the permission in every sensitive use
+case.
 
-- Deny by default. An operation without an explicit rule is forbidden.
-- Read the role from the server-side membership, not from the request.
-- Prevent vertical escalation: nobody grants a role above their own, and nobody changes their own role.
-- Prevent horizontal escalation: a permission applies inside the caller's tenant and its own records only.
-- Hiding a button is presentation, not security. The frontend `PermissionGate` only mirrors what the API enforces.
-
-## Mass Assignment
-
-Never pass the client payload straight to the ORM.
-
-```ts
-// Wrong: the caller can also send role, isAdmin, tenantId, or balance.
-await prisma.user.update({ where: { id }, data: req.body });
-
-// Right: parse an allowlist of editable fields and reject anything else.
-const ProfileUpdate = z
-  .object({ firstName: z.string().max(80), lastName: z.string().max(80), avatar: z.string().url() })
-  .partial()
-  .strict();
-
-await prisma.user.update({
-  where: { id: req.auth.userId },
-  data: ProfileUpdate.parse(req.body),
-});
+```csharp
+if (!session.Has(Permissions.Sales.Void))
+    return Result.Fail(Errors.Forbidden);
 ```
 
-Fields such as `role`, `isAdmin`, `permissions`, `tenantId`, `accountId`, `ownerId`,
-`balance`, lifecycle status, and audit timestamps are never client-writable. They change only
-through the workflow that owns them.
+- Deny by default. A use case without an explicit rule is forbidden.
+- Prevent vertical escalation: nobody grants a role above their own, nobody changes their own
+  role, and the last administrator cannot be removed or demoted.
+- Prevent horizontal escalation: a permission applies inside the selected company only.
+- Actions that need a second person use a supervisor override. See
+  `../architecture/authentication.md`.
+- ViewModels bind `CanExecute` to the same permission so the interface stays honest, but the
+  use case is the control.
+
+## Company Scoping
+
+When one database holds several companies, branches, or workspaces, isolation is an
+architectural requirement.
+
+- Every owned table carries a `company_id` column; use one name everywhere.
+- Every private query filters by it, with the value from the session.
+- Repository methods for owned data take the company as a parameter. No `GetById(id)` exists
+  for them.
+
+```sql
+-- Wrong
+SELECT id, number, total_minor FROM sales WHERE id = @Id;
+
+-- Right
+SELECT id, number, total_minor FROM sales WHERE id = @Id AND company_id = @CompanyId;
+```
+
+- Updates and deletes filter by company too, so a record outside the scope fails as not found.
+- Verify every referenced ID in an input. A sale line pointing to another company's product
+  is cross-company access through a foreign key.
+- Enforce it in the schema with composite foreign keys:
+
+```sql
+CREATE TABLE products (
+    id         INTEGER PRIMARY KEY,
+    company_id INTEGER NOT NULL REFERENCES companies (id),
+    UNIQUE (company_id, id)
+) STRICT;
+
+CREATE TABLE sale_lines (
+    id         INTEGER PRIMARY KEY,
+    company_id INTEGER NOT NULL,
+    sale_id    INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    FOREIGN KEY (company_id, sale_id)    REFERENCES sales (company_id, id),
+    FOREIGN KEY (company_id, product_id) REFERENCES products (company_id, id)
+) STRICT;
+```
+
+See `../architecture/database.md` for the constraints themselves.
+
+## Explicit Input DTOs
+
+Never map a whole ViewModel or entity into an `UPDATE`.
+
+```csharp
+// Wrong: every property is written, including role, company, balance, or status.
+await connection.UpdateAsync(user);              // generic helper over the entity
+
+// Right: the use case accepts only the editable fields, and SQL names them.
+public sealed record UpdateProfileInput(string FirstName, string LastName);
+
+await connection.ExecuteAsync(
+    "UPDATE users SET first_name = @FirstName, last_name = @LastName " +
+    "WHERE id = @UserId AND company_id = @CompanyId",
+    new { input.FirstName, input.LastName, session.UserId, session.CompanyId }, tx);
+```
+
+Role, permissions, `company_id`, owner, balances, lifecycle status, sequential numbers, and
+audit timestamps change only through the workflow that owns them.
 
 ## Do Not Leak Existence
 
-- A record outside the caller's tenant answers `404 Not Found`, exactly as if it did not exist.
-- Inside the tenant, `403 Forbidden` is acceptable when the caller may know the record exists. For highly sensitive resources, answer `404` there too.
-- Keep messages and timing uniform where they could reveal accounts or records.
-- Error responses never carry debug detail, internal identifiers, stack traces, secrets, or another account's data.
-- Sequential identifiers make enumeration trivial. Prefer non-sequential public identifiers, and authorize anyway.
+- A record in another company returns `not_found`, exactly as if it did not exist.
+- Inside the company, `forbidden` is acceptable when the operator may know the record exists.
+- Keep messages uniform where they could reveal users or records, such as sign-in failures.
+- Errors never carry internal keys, SQL, paths, stack traces, or another company's data.
 
-## Downloads And Signed URLs
+## Exports And Generated Files
 
-- Download and export routes authorize ownership like any other read.
-- Generate a signed URL only after verifying ownership.
-- Keep its lifetime short and its scope to one object and one operation.
-- Never issue long-lived or reusable signed URLs, and never log them; a signed URL is a bearer credential.
+- Exports, reports, printed documents, and generated files are authorized and scoped like
+  reads, and audited.
+- A file saved outside the application data folders leaves our control. Include only what the
+  user asked for, and warn when it holds personal data.
+- Temporary files are created in the application data folder and deleted when done.
+
+## Tamper Evidence
+
+Prevention ends at the file system, so detect what cannot be prevented:
+
+- An `audit_log` table, written in the same transaction as the action, append-only for
+  application code. See `../quality/observability.md`.
+- Integrity checks at startup and on demand: `PRAGMA integrity_check`, totals that must
+  reconcile, and sequential numbers without gaps.
+- Optionally, a hash chain over critical records, such as issued documents and cash
+  movements: each row stores `hash = SHA-256(previous_hash || canonical_row)`. A
+  verification job reports the first broken link. The chain is stronger when its latest hash
+  is also sent to a vendor service or printed on a closing report.
+- Reconciliation with an external authority, when one exists, after any restore or
+  suspected tampering.
 
 ## Review: Patterns To Hunt
 
-Search proactively for:
-
-- `findUnique({ where: { id } })`, `update({ where: { id } })`, or `delete({ where: { id } })` on tenant-owned data without a tenant filter;
-- `req.body.userId`, `req.body.accountId`, `req.body.tenantId`, or `req.query.role` used to decide access;
-- `GET`, `PATCH`, or `DELETE /resource/:id` handlers without an ownership check;
-- `data: req.body` or a spread of the payload into a create or update;
-- permission checks that exist only in the frontend;
-- download routes or signed URL generators that skip ownership.
+- `WHERE id = @Id` on owned tables without `company_id`;
+- input DTOs with `UserId`, `CompanyId`, or `Role` used to decide access;
+- permission checks only in `CanExecute`, visibility bindings, or menus;
+- generic update helpers or SQL built from every property of an entity;
+- exports, reports, or file generation without an authorization check;
+- background jobs that run use cases without a session or explicit system context.
 
 ## Reject The Change When
 
-- a private record is looked up by a client-supplied identifier alone;
-- identity, tenant, or role is read from the request instead of the server context;
-- a client payload reaches the ORM without an allowlist;
+- a private record is looked up by an identifier alone;
+- identity, company, or role is read from input instead of the session;
+- a whole ViewModel or entity is written to the database;
 - a permission is enforced only in the interface;
-- a new private endpoint has no cross-tenant or foreign-ID test;
+- a new private use case has no cross-company or foreign-ID test;
 - an authorization check was removed or loosened to make a test pass.
 
 ## Verification
 
-- [ ] Identity, tenant, and role come only from the authenticated server context.
-- [ ] Every private query is scoped by tenant and ownership, including updates and deletes.
-- [ ] Every referenced ID in a payload is verified against the caller's tenant.
-- [ ] Roles map to explicit permissions, denied by default, checked per operation.
-- [ ] Writable fields are an explicit allowlist.
-- [ ] Records outside the tenant are indistinguishable from missing ones.
-- [ ] Downloads and signed URLs verify ownership, expire quickly, and are scoped to one object.
+- [ ] User, role, and company come only from `ICurrentSession`.
+- [ ] Every private query is scoped by company and ownership, including updates and deletes.
+- [ ] Every referenced ID in an input is verified against the selected company.
+- [ ] Roles map to explicit permissions, denied by default, checked in each use case.
+- [ ] Inputs are explicit DTOs with editable fields only.
+- [ ] Records in other companies are indistinguishable from missing ones.
+- [ ] Exports and generated files are authorized, scoped, and audited.
+- [ ] The product states which threats need OS permissions, encryption, or tamper evidence.
 - [ ] The access tests in `../quality/testing.md` exist and pass.
