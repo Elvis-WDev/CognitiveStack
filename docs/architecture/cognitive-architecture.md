@@ -4,9 +4,9 @@ The quality of an interface is not the amount of information, controls, cards, c
 features it can display. It is how much complexity the system absorbs without transferring
 that complexity to the person using it.
 
-This document governs what a screen must resolve before any component file is opened.
+This document governs what a screen must resolve before any view or ViewModel is opened.
 `interface-design.md` then chooses surfaces and layout, `design-foundations.md` supplies the
-scales, and `../quality/frontend-checklist.md` audits the result.
+scales, and `../quality/ui-checklist.md` audits the result.
 
 ## Absolute Constraints
 
@@ -22,12 +22,12 @@ Design in this direction instead:
 user -> context -> goal -> decision -> required information -> action -> feedback -> next step
 ```
 
-Neither an existing API nor an existing model dictates the information architecture of a
-screen.
+Neither an existing use case nor an existing model dictates the information architecture of
+a screen.
 
-### Never show information only because the backend returns it
+### Never show information only because a query returns it
 
-The existence of a value does not justify its presence in the initial view. An endpoint
+The existence of a value does not justify its presence in the initial view. A query or DTO
 that returns thirty fields is not a specification for thirty visible fields, and a feature
 that exists is not a feature that must be permanently on screen.
 
@@ -54,31 +54,31 @@ with more cards, more columns, or more explanatory copy.
 
 Answer these as well when the screen is new, used daily, or carries real risk:
 
-| Question                                            | What it changes                                                                       |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| How often is it used?                               | Daily work earns density, shortcuts, and saved views. Occasional work earns guidance.  |
-| How experienced is the user?                        | Sets how much the screen must teach and how much it can assume.                        |
-| Is the task exploratory, routine, urgent, or critical? | Sets pacing, confirmation, and how much context must stay on screen.                 |
-| Which device is primary?                            | Decides which layout is designed first, not which one gets shrunk.                     |
-| What happens if the user gets it wrong?             | Sets the confirmation ladder and the recovery path.                                    |
-| What does the user expect right after acting?       | Defines the success state and the next step.                                           |
+| Question                                               | What it changes                                                                         |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| How often is it used?                                  | Daily work earns density, shortcuts, and saved views. Occasional work earns guidance.   |
+| How experienced is the user?                           | Sets how much the screen must teach and how much it can assume.                         |
+| Is the task exploratory, routine, urgent, or critical? | Sets pacing, confirmation, and how much context must stay on screen.                    |
+| Which input and station are primary?                   | Keyboard and mouse, touch, or scanner decides which layout and flow are designed first. |
+| What happens if the user gets it wrong?                | Sets the confirmation ladder and the recovery path.                                     |
+| What does the user expect right after acting?          | Defines the success state and the next step.                                            |
 
 ## Describe The Job, Not The Entity
 
 A screen represents a user's job, not a database relation.
 
-| Entity framing              | Job framing                                                                 |
-| --------------------------- | --------------------------------------------------------------------------- |
-| "The invoice entity page."  | "Review an invoice, find the problem, and decide whether to approve it."     |
-| "The users table."          | "Find a person, understand their access, and adjust it."                     |
-| "The analytics page."       | "See what changed and decide what to do about it."                           |
+| Entity framing               | Job framing                                                              |
+| ---------------------------- | ------------------------------------------------------------------------ |
+| "The invoice entity screen." | "Review an invoice, find the problem, and decide whether to approve it." |
+| "The users table."           | "Find a person, understand their access, and adjust it."                 |
+| "The analytics screen."      | "See what changed and decide what to do about it."                       |
 
 The framing decides the layout. The first column, the default filter, the primary action,
 and everything the screen leaves out all follow from the job.
 
 ## The Screen Contract
 
-Every screen answers these without the user having to inspect the whole page:
+Every screen answers these without the user having to inspect the whole screen:
 
 1. Where am I?
 2. What am I looking at?
@@ -90,20 +90,21 @@ Every screen answers these without the user having to inspect the whole page:
 
 ### The Two-Second Rule
 
-Basic orientation should land in about two seconds. The first viewport carries context,
-title, state, the leading information, and the primary action. If a user must read five
-cards, a table, and three paragraphs to learn where they are, the hierarchy failed.
+Basic orientation should land in about two seconds. The first visible area carries context,
+title, state, the leading information, and the primary action, at the minimum supported
+window size. If a user must read five cards, a grid, and three paragraphs to learn where
+they are, the hierarchy failed.
 
 ## Information Tiers
 
 Classify information before placing it.
 
-| Tier | Role          | Typical content                                                                    | Placement                                          |
-| ---- | ------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------- |
-| P0   | Orientation   | Current object, state, critical alert, headline result, primary action             | Visible on arrival                                 |
-| P1   | Decision      | Owner, dates, key metrics, comparison, recent activity, blocking reason            | Visible in the working surface                     |
-| P2   | Secondary     | Full attributes, related collections, notes, history summary                       | One deliberate interaction away                    |
-| P3   | Investigation | Internal identifiers, payloads, logs, audit trail, versions, advanced configuration | Behind an explicit, usually permission-gated view  |
+| Tier | Role          | Typical content                                                                     | Placement                                         |
+| ---- | ------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------- |
+| P0   | Orientation   | Current object, state, critical alert, headline result, primary action              | Visible on arrival                                |
+| P1   | Decision      | Owner, dates, key metrics, comparison, recent activity, blocking reason             | Visible in the working surface                    |
+| P2   | Secondary     | Full attributes, related collections, notes, history summary                        | One deliberate interaction away                   |
+| P3   | Investigation | Internal identifiers, payloads, logs, audit trail, versions, advanced configuration | Behind an explicit, usually permission-gated view |
 
 Rules:
 
@@ -136,11 +137,11 @@ Buscar  Estado  Responsable  [Mas filtros]
 
 Decision time grows with the number of simultaneous options, so every surface has a budget.
 
-| Surface   | Primary                            | Visible secondary                       | Everything else                            |
-| --------- | ---------------------------------- | --------------------------------------- | ------------------------------------------ |
-| Screen    | Exactly one                        | One or two                              | Overflow menu, detail surface, or sheet    |
-| Table row | Opening the record from the row    | Up to three frequent, row-valid actions | `...` overflow menu                        |
-| Dialog    | One confirming action              | `Cancelar`                              | Nothing                                    |
+| Surface  | Primary                         | Visible secondary                       | Everything else                           |
+| -------- | ------------------------------- | --------------------------------------- | ----------------------------------------- |
+| Screen   | Exactly one                     | One or two                              | Overflow menu, detail surface, side panel |
+| Grid row | Opening the record from the row | Up to three frequent, row-valid actions | `...` overflow or context menu            |
+| Dialog   | One confirming action           | `Cancelar`                              | Nothing                                   |
 
 Do not render `Editar`, `Duplicar`, `Exportar`, `Eliminar`, `Asignar`, `Mover`, `Archivar`,
 and `Compartir` side by side because all eight exist.
@@ -158,7 +159,8 @@ Two buttons of equal weight are two primary actions, which means the screen has 
 
 The user should not have to carry state in their head between screens.
 
-- Returning from a detail surface restores filters, sorting, page, scroll position, and selection.
+- Returning from a detail surface restores filters, sorting, page, scroll position, and
+  selection, because the list ViewModel owns that state and the shell keeps it alive.
 - Confirmations name the record: `Eliminar Proyecto Marketing Q4`, never `Confirmar accion`.
 - A record that names another record links to it.
 - Show what comes next when the domain has a next step: `Pendiente de aprobacion`, `Proxima revision: manana`.
@@ -167,25 +169,25 @@ The user should not have to carry state in their head between screens.
 ## Beginner Clarity, Expert Speed
 
 Design the default path for someone seeing the screen for the first time, then add
-accelerators that do not tax that path: keyboard shortcuts, saved views, bulk actions, a
-command palette, and a denser display mode.
+accelerators that do not tax that path: keyboard shortcuts and access keys, scanner input,
+saved views, bulk actions, a command palette, and a denser display mode.
 
 Frequency and risk set the friction:
 
-| Pattern              | Design                                                               |
-| -------------------- | -------------------------------------------------------------------- |
-| Frequent, low risk   | Fewest possible steps, immediate feedback, reversible                |
-| Frequent, high risk  | Fast path plus an unmistakable confirmation and a recovery path      |
-| Rare, low risk       | Guidance and explanation over speed                                  |
-| Rare, high risk      | Full context, explicit consequences, proportional confirmation       |
+| Pattern             | Design                                                          |
+| ------------------- | --------------------------------------------------------------- |
+| Frequent, low risk  | Fewest possible steps, immediate feedback, reversible           |
+| Frequent, high risk | Fast path plus an unmistakable confirmation and a recovery path |
+| Rare, low risk      | Guidance and explanation over speed                             |
+| Rare, high risk     | Full context, explicit consequences, proportional confirmation  |
 
 ## Reporting Format
 
 Before implementing a new screen or a redesign, report in this order:
 
-1. **Diagnosis**: user job, current frictions, cognitive load, hierarchy problems, redundant information, inconsistencies, responsive and accessibility gaps.
+1. **Diagnosis**: user job, current frictions, cognitive load, hierarchy problems, redundant information, inconsistencies, window-size, scaling, input, and accessibility gaps.
 2. **Solution architecture**: primary decision, primary action, P0-P3 tiering, progressive disclosure plan, surface and layout choice, navigation placement, components.
-3. **Technical implementation**: shared components reused, new components and why, tokens, states, responsive behavior, accessibility, motion, performance.
-4. **Verification**: commands run, keyboard pass, mobile pass, reduced motion, edge cases, and every acceptance criterion reported as met or as a declared exception.
+3. **Technical implementation**: shared controls and styles reused, new ones and why, ViewModels and commands, tokens, states, window-size and DPI behavior, accessibility, motion, performance.
+4. **Verification**: commands run, keyboard pass, touch and scanner pass when supported, display scales, minimum window size, animations off, themes, edge cases, and every acceptance criterion reported as met or as a declared exception.
 
 Keep it short. Four honest paragraphs beat a document nobody reads.
