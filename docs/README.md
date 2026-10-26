@@ -14,6 +14,9 @@ Use this directory as the project knowledge base.
 
 When code changes behavior, update the relevant document in the same pull request.
 
-For frontend work, answer the screen brief in `architecture/cognitive-architecture.md`
-first, then start with `architecture/frontend.md`, open only the relevant interface-pattern
-documents, and finish with `quality/frontend-checklist.md`.
+For interface work, answer the screen brief in `architecture/cognitive-architecture.md`
+first, then start with `architecture/wpf-mvvm.md`, open only the relevant interface-pattern
+documents, and finish with `quality/ui-checklist.md`.
+
+For data work, start with `architecture/database.md`; for sensitive operations, answer the
+brief in `architecture/dotnet-architecture.md` first.

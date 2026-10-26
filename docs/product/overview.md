@@ -22,6 +22,15 @@ Describe the product in one or two paragraphs.
 2. Workflow name: brief description.
 3. Workflow name: brief description.
 
+## Operating Context
+
+- Supported Windows versions:
+- Installation: per user or per machine:
+- Terminals: single machine, or several sharing data (see `../architecture/database.md`):
+- Offline behavior: what works without network, and what waits for it:
+- External services and other systems, and the contract with each:
+- Data ownership: one company per database, or several:
+
 ## Non-Goals
 
 - What this system intentionally does not do.

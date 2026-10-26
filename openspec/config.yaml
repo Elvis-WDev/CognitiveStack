@@ -7,23 +7,26 @@ githubCopilot:
 # documents that hold the durable rules. Agents open those only when a change needs them.
 
 context: |
-  This project follows CognitiveStack. AGENTS.md is the agent entry point and lists the
-  permanent engineering constraints.
+  This project follows CognitiveStack for Windows desktop applications. AGENTS.md is the
+  agent entry point and lists the permanent engineering constraints.
 
   Sources of truth:
   - Product purpose, users, domain, and vocabulary: docs/product/.
   - Current observable behavior: openspec/specs/.
   - Proposed and in-progress behavior changes: openspec/changes/.
   - Architecture and boundaries: ARCHITECTURE.md and docs/architecture/.
-  - Interface rules: docs/architecture/, starting at frontend.md.
+  - Layers and sensitive operations: docs/architecture/dotnet-architecture.md.
+  - Interface rules: docs/architecture/, starting at wpf-mvvm.md.
+  - Database, migrations, and backups: docs/architecture/database.md.
   - Security: docs/security/. Quality and Definition of Done: docs/quality/.
   - Architecture decisions: docs/architecture/adr/.
 
   Load only the CognitiveStack documents relevant to the affected area. Reference them
   from artifacts instead of copying their content.
 
-  Stack: TypeScript, Express REST API, Next.js, Better Auth, PostgreSQL with Prisma,
-  Tailwind CSS and shadcn/ui, React Hook Form and Zod, pnpm through Corepack.
+  Stack: C# 14 on .NET 10 LTS, WPF with MVVM through CommunityToolkit.Mvvm, the .NET
+  Generic Host, SQLite with Microsoft.Data.Sqlite and Dapper, xUnit, NuGet with Central
+  Package Management. Developed on Linux, smoke-tested under Wine, accepted on Windows.
 
 rules:
   proposal:
@@ -32,35 +35,38 @@ rules:
     - Name capabilities after durable product behavior, in the vocabulary of docs/product/glossary.md, never after tasks or tables.
     - Do not prescribe implementation unless it is needed to explain the scope.
   specs:
-    - Describe observable behavior from the user's or the system's perspective, never database tables, columns, or infrastructure.
-    - Cover success, validation, permission, and boundary scenarios where they apply.
-    - For private data, add a scenario where a user from another tenant cannot read, change, or detect the record.
-    - For a mutation whose repetition would duplicate an effect, add a scenario where repeated or concurrent requests produce one effect.
+    - Describe observable behavior from the user's or the system's perspective, never tables, columns, classes, or infrastructure.
+    - Cover success, validation, permission, failure, and boundary scenarios where they apply.
+    - For permission-controlled behavior, add a scenario where a user without the permission is rejected and nothing changes.
+    - When one database holds several companies or workspaces, add a scenario where a user of another company cannot read, change, or detect the record.
+    - For an operation whose repetition would duplicate an effect, add a scenario where repeated or concurrent attempts produce one effect.
+    - For behavior that depends on an external service, add scenarios for its timeout, rejection, and unavailability, and for an application restart in between.
   design:
     - Read the relevant CognitiveStack architecture documents before deciding, and respect their boundaries and shared patterns.
     - For each new or changed screen, answer the screen brief in docs/architecture/cognitive-architecture.md, including the P0-P3 tiering.
     - Choose each control from the user's intent with docs/architecture/component-selection.md, and reuse the contracts in docs/architecture/component-system.md.
-    - For each sensitive operation, answer the brief in docs/architecture/backend.md, covering tenant, ownership, idempotency, constraints, audit, and leak paths.
-    - Address validation, migrations, observability, and performance when the change touches them.
+    - For each sensitive operation, answer the brief in docs/architecture/dotnet-architecture.md, covering permission, ownership, idempotency, transactions, constraints, crash recovery, audit, and leak paths.
+    - Address validation, migrations, backups, observability, and performance when the change touches them.
     - Record any deviation from docs/architecture/stack.md as an ADR in docs/architecture/adr/.
   tasks:
-    - Make each task group one coherent, verifiable unit that can become its own commit, ordered schema, then API, then interface.
-    - Put tests in the same group as the behavior they cover, including access control and idempotency tests for sensitive operations.
-    - Add a migration task whenever data structures change.
-    - For interface work, cover loading, empty, error, permission, success, responsive, keyboard, light, and dark states, and the frontend checklist.
-    - Add documentation tasks when architecture, API, or durable rules change.
-    - End with the project verification command.
+    - Make each task group one coherent, verifiable unit that can become its own commit, ordered schema, then domain and use cases, then interface.
+    - Put tests in the same group as the behavior they cover, including permission, idempotency, and transaction tests for sensitive operations.
+    - Add a migration task whenever data structures change, with tests from an empty database and from the previous version.
+    - For interface work, cover loading, empty, error, permission, success, keyboard, display scaling, light, dark, and high-contrast states, and the UI checklist.
+    - Add a task for the Windows acceptance steps the change needs, and keep it open until it is run on real Windows.
+    - Add documentation tasks when architecture, data, or durable rules change.
+    - End with the project verification commands.
 
 operations:
   apply:
     guidance:
       - Read AGENTS.md and only the CognitiveStack documents the current task touches before changing code.
-      - Use the specialist skill that matches the task, such as implement-operational-frontend, create-migration, harden-security, or optimize-performance.
-      - Use pnpm through Corepack only.
-      - Do not mark a task complete while its verification fails.
+      - Use the specialist skill that matches the task, such as implement-wpf-screen, create-migration, harden-security, or optimize-performance.
+      - Use the dotnet CLI and NuGet with Central Package Management; restore in locked mode.
+      - Do not mark a task complete while its verification fails, and state which checks still need real Windows.
       - When committing, commit each completed task group separately, as docs/quality/version-control.md requires.
   archive:
     guidance:
       - Archive only when implementation, specs, tests, documentation, and the Definition of Done agree.
-      - Confirm the delta specs describe what actually shipped before merging them into openspec/specs/.
+      - Confirm the delta specs describe what actually shipped and was verified before merging them into openspec/specs/.
       - Archive in its own commit.

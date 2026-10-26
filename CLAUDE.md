@@ -9,6 +9,7 @@ This file mirrors the high-level guidance in `AGENTS.md` for Claude-based workfl
 - `docs/product/overview.md`
 - `docs/quality/definition-of-done.md`
 - `docs/quality/change-lifecycle.md`
+- `docs/architecture/stack.md`
 
 ## Working Rules
 
@@ -18,4 +19,5 @@ This file mirrors the high-level guidance in `AGENTS.md` for Claude-based workfl
 - Update docs in the same change that updates behavior.
 - Commit each coherent unit separately, with a short descriptive message.
 - Do not expose secrets or environment values in summaries.
+- Report what still needs verification on real Windows; never present untested work as done.
 
