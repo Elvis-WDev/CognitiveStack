@@ -1,65 +1,82 @@
 # Stack Baseline
 
-This is the default technology stack for new applications using this context.
+This is the default technology stack for Windows desktop applications using this context.
+A project that deviates records the reason and its consequences in an ADR in
+`docs/architecture/adr/`.
 
-## Package Manager
+## Language And Runtime
 
-- Use pnpm through Corepack.
-- Do not use npm or yarn for installs, scripts, audits, or lockfile updates.
-- Keep the package manager version declared in `packageManager` when a code repo exists.
+- C# 14.
+- .NET 10 LTS. Libraries target `net10.0`; only the WPF host targets `net10.0-windows`.
+- Nullable reference types enabled, implicit usings enabled, analyzers at the latest level.
+- `decimal` for money, quantities with fractions, rates, and taxes. Never `double` or `float` for amounts.
 
-Recommended commands:
+## Interface
 
-```bash
-corepack enable
-corepack pnpm install
-corepack pnpm dev
-corepack pnpm verify
-```
+- WPF with XAML.
+- MVVM with CommunityToolkit.Mvvm: `ObservableObject`, `[ObservableProperty]`,
+  `[RelayCommand]`, `AsyncRelayCommand`, and `ObservableValidator`.
+- One icon family, stored as vector geometry resources, never as a font that may be missing
+  on the target machine.
+- Visual tokens in XAML resource dictionaries; see `design-foundations.md`.
 
-## Backend
+## Composition
 
-- Node.js.
-- TypeScript.
-- Express.js for REST APIs.
-- Zod for request, response, and environment validation.
-- Better Auth for authentication.
-- Prisma for database access.
-- PostgreSQL as the primary database.
-- Axios for external HTTP APIs.
-
-## Frontend
-
-- Next.js with TypeScript.
-- React.
-- Tailwind CSS.
-- shadcn/ui for reusable UI components.
-- lucide-react for icons.
-- React Hook Form for forms.
-- Zod for form schemas.
-- shadcn charts or a chart library integrated through shadcn conventions for dashboards.
-- Auto-animate or equivalent small motion helpers only when motion improves clarity.
+- Generic Host from Microsoft.Extensions.Hosting, started by the WPF application.
+- Microsoft.Extensions.DependencyInjection, Options, Configuration, and Logging.
+- Serilog with a rolling file sink behind `ILogger<T>`.
 
 ## Persistence
 
-- PostgreSQL is the production database.
-- Prisma migrations are the schema source of truth.
-- SQLite can be used only for disposable local experiments if explicitly documented.
+- SQLite through Microsoft.Data.Sqlite.
+- Dapper for queries and commands, with parameterized SQL only.
+- Versioned SQL migration scripts embedded in the infrastructure project and applied by a
+  small runner at startup. See `database.md`.
+- Backups through `SqliteConnection.BackupDatabase`.
 
-## Authentication
+## External Services
 
-- Better Auth owns sign-in, sign-out, sessions, cookies, password hashing, and auth tables.
-- Do not implement custom password hashing or session tables unless an ADR replaces Better Auth.
+- `HttpClient` through `IHttpClientFactory`, with typed clients.
+- Microsoft.Extensions.Http.Resilience for timeouts, retries, and circuit breaking.
+- System.Text.Json, with source generation for contracts on hot paths.
+- MailKit for SMTP.
 
-## Deployment
+## Testing
 
-- Docker is the default packaging target.
-- The database can be remote in production.
-- Containers must not destroy database data on redeploy.
-- Health checks should exist for API containers.
-- Frontend and API can share one public domain when routed by path, for example `/` and `/api`.
+- xUnit for unit, integration, and ViewModel tests.
+- Real SQLite databases in temporary files for integration tests, never mocks of SQL.
+- Mailpit, run in Docker, as the SMTP sink during development and tests.
 
-## Documentation
+## Packages
 
-When a project deviates from this stack, create an ADR in `docs/architecture/adr/`.
+- NuGet with Central Package Management in `Directory.Packages.props`.
+- Lock files enabled (`packages.lock.json`) and restored in locked mode in CI.
+- NuGet Audit enabled for direct and transitive packages.
+- Every production dependency is justified in its commit or in an ADR.
 
+## Development Environment
+
+- Development may happen on Linux, with VS Code or Zed and the .NET SDK.
+- The WPF host builds on Linux with `EnableWindowsTargeting` set to `true`.
+- Wine runs quick smoke tests of the WPF host during development. It does not certify
+  compatibility.
+- Acceptance happens on real Windows 10 and 11 machines before any release.
+- Docker is used only for auxiliary tools, such as Mailpit or a read-only SQLite browser.
+
+## Distribution
+
+- `dotnet publish` for `win-x64`, self-contained unless an ADR chooses framework-dependent.
+- Signed executables, a signed installer, and signed update packages.
+- The installer and updater technology is recorded in an ADR. See `distribution.md`.
+
+## Platform Scope
+
+The baseline supports Windows 10 and 11 on the .NET 10 runtime. It does not promise support
+for Windows versions without vendor support. A legacy edition, if ever justified, gets its
+own decisions, code, dependencies, and tests; the main project is never degraded to sustain
+it.
+
+## Tooling Outside The Application
+
+OpenSpec runs on Node.js as a developer tool only. It is not part of the application, and
+no Node.js dependency enters the solution. See `../quality/change-lifecycle.md`.
